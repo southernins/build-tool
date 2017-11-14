@@ -1,0 +1,21 @@
+{
+  "name": "southernins/build-tool",
+  "description": "Tool to create build files for deploying to AWS Elastic Beanstalk",
+  "license": "MIT",
+  "keywords": ["build"],
+  "authors": [
+    {
+      "name": "Nathan Crews",
+      "email": "ncrews@southerninsurance.net"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "~5.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "southernins\\build-tool\\": "src"
+    }
+  }
+}
