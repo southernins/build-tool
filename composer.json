@@ -9,18 +9,21 @@
       "email": "ncrews@southerninsurance.net"
     }
   ],
-  "require": {},
+  "require": {
+    "illuminate/support": "~5.1"
+  },
   "require-dev": {
     "phpunit/phpunit": "~5.7"
   },
   "autoload": {
     "psr-4": {
-      "SouthernIns\\BuildTool\\": "src"
+      "SouthernIns\\BuildTool\\": "src/"
     }
   },
+
   "extra": {
-    "laravel":{
-      "providers":[
+    "laravel": {
+      "providers": [
         "SouthernIns\\BuildTool\\BuildServiceProvider"
       ]
     }
