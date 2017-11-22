@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Console\Commands;
+//namespace App\Console\Commands;
+namespace SouthernIns\BuildTool;
 
 use Illuminate\Console\Command;
 
