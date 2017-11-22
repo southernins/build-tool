@@ -15,7 +15,14 @@
   },
   "autoload": {
     "psr-4": {
-      "southernins\\build-tool\\": "src"
+      "SouthernIns\\BuildTool\\": "src"
+    }
+  },
+  "extra": {
+    "laravel":{
+      "provider":[
+        "SouthernIns\\BuildTool\\BuildServiceProvider"
+      ]
     }
   }
 }
