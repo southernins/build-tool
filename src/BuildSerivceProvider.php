@@ -3,6 +3,9 @@
 namespace SouthernIns\BuildTool;
 
 use Illuminate\Support\ServiceProvider;
+use SouthernIns\BuildTool\Commands\BuildCommand;
+use SouthernIns\Buildtool\Commandds\BuildDevCommand;
+
 
 class BuildServiceProvider extends ServiceProvider {
 
@@ -10,7 +13,7 @@ class BuildServiceProvider extends ServiceProvider {
 
         if( $this->app->runningInConsole() ){
             $this->commands([
-                Commands\BuildCommand::class
+                BuildCommand::class
             ]);
         }
 
@@ -19,7 +22,7 @@ class BuildServiceProvider extends ServiceProvider {
     public function register(){
         if( $this->app->runningInConsole() ){
             $this->commands([
-                Commands\BuildDevCommand::class
+                BuildDevCommand::class
             ]);
         }
 
