@@ -1,7 +1,7 @@
 <?php
 
 //namespace App\Console\Commands;
-namespace SouthernIns\BuildTool;
+namespace SouthernIns\BuildTool\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
