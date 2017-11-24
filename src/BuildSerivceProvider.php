@@ -4,7 +4,7 @@ namespace SouthernIns\BuildTool;
 
 use Illuminate\Support\ServiceProvider;
 use SouthernIns\BuildTool\Commands\BuildCommand;
-use SouthernIns\Buildtool\Commandds\BuildDevCommand;
+use SouthernIns\Buildtool\Commands\BuildDevCommand;
 
 
 class BuildServiceProvider extends ServiceProvider {
