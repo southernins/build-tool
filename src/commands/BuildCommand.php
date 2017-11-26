@@ -40,60 +40,13 @@ class BuildCommand extends Command {
      */
     public function handle() {
 
-        $projectPath = base_path();
-
-        $dirArr = explode("/", $projectPath);
-
-        $projectFolder = end($dirArr);
-
-
-        $version = Carbon::now()->format('Y.m.d.Hi');
-
         $environment = App::environment();
 
 
-        $this->info( "Creating $projectFolder - $environment Build verion $version" );
+        $this->createBuildFile( $environment );
 
-        $this->comment( "Clearing App Cache" );
 
-        $this->call("cache:clear", [
-            '--env' => $environment
-        ]);
-
-        // TEST this... it may be a  way to push
-        // cached configs to server.
-//        $this->call( "config:cache", [
-//        '--env' => $environment
-//        ] );
-
-        $newEnv = $projectPath . "/environments/.env." . $environment;
-
-        // copy specified environment to .env
-        if( file_exists( $newEnv )){
-            copy( $newEnv, $projectPath . "/.env" );
-        }  //- END file_exists()
-
-        // Removed php artisan optimize from Composer.json
-        // Running this in composer ignored the current environment
-        // set by --env
-        // optimize is being depreciated in 5.5 and removed in 5.6...
-        // TODO:: remove when laravel upgraded to 5.5
-        $this->call( "optimize",[
-            '--env' => $environment
-        ] );
-
-        // INSTALL git in Guest OS
-        // sudo apt-get install git
-        // Get current Git Branch name
-        $gitBranch = new Process( "git rev-parse --abbrev-ref HEAD" );
-        $gitBranch->run();
-
-        if (!$gitBranch->isSuccessful()) {
-            throw new ProcessFailedException($gitBranch);
-        }
-
-        // Set Current Git Branch Name from command output
-        $curBranch = $gitBranch->getOutput();
+        $curBranch = $this->branchName();
 
         if( $environment == "production" ){
 
@@ -183,5 +136,95 @@ class BuildCommand extends Command {
         $this->info( "Build Completed Successfully" );
 
     } // END function handle()
+
+
+    protected function createBuildFile( $environment ){
+
+        $projectPath = base_path();
+
+        $dirArr = explode("/", $projectPath);
+
+        $projectFolder = end( $dirArr );
+
+        $version = $this->buildVersion();
+
+        $this->info( "Creating $projectFolder - $environment Build verion $version" );
+
+        $this->clearCache( $environment );
+
+    } //- END function createBuildFile()
+
+
+
+    /**
+     * function to get the Curent Branch Name
+     *
+     * @return string
+     */
+    protected function branchName(){
+
+        // INSTALL git in Guest OS
+        // sudo apt-get install git
+        // Get current Git Branch name
+        $gitBranch = new Process( "git rev-parse --abbrev-ref HEAD" );
+        $gitBranch->run();
+
+        if( !$gitBranch->isSuccessful() ){
+            throw new ProcessFailedException( $gitBranch );
+        }
+
+        // return Current Git Branch Name from command output
+        return $gitBranch->getOutput();
+
+    } //- END function branchName()
+
+    protected function buildVersion( $environment ){
+
+        $version = Carbon::now()->format('Y.m.d.Hi');
+
+        if( $environment != 'production' ){
+
+            // Label non production builds with the current Environment
+            $version = $version ."_" . $environment;
+        } //- END if( is production )
+
+
+        return $version;
+
+    } //- END function buildVersion()
+
+    protected function clearCache( $environment ){
+
+        // TEST this... it may be a  way to push
+        // cached configs to server.
+//        $this->call( "config:cache", [
+//        '--env' => $environment
+//        ] );
+        $this->comment( "Clearing App Cache" );
+
+        $this->call("cache:clear", [
+            '--env' => $environment
+        ]);
+    } //- END function clearCache()
+
+    protected function setEnvironmentFile( $environment ){
+
+        $newEnv = $projectPath . "/environments/.env." . $environment;
+
+        // copy specified environment to .env
+        if( file_exists( $newEnv )){
+            copy( $newEnv, $projectPath . "/.env" );
+        }  //- END file_exists()
+
+        // Removed php artisan optimize from Composer.json
+        // Running this in composer ignored the current environment
+        // set by --env
+        // optimize is being depreciated in 5.5 and removed in 5.6...
+        // TODO:: remove when laravel upgraded to 5.5
+        $this->call( "optimize",[
+            '--env' => $environment
+        ] );
+
+    } //- END function setEnvironmentFile()
 
 }

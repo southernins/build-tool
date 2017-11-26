@@ -1,0 +1,39 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: nakie
+ * Date: 11/25/17
+ * Time: 4:53 PM
+ */
+
+namespace SouthernIns\BuildTool\Shell;
+
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+
+
+class Git {
+
+    /**
+     * function to get the Curent Branch Name
+     *
+     * @return string
+     */
+    static function branchName(){
+
+        // INSTALL git in Guest OS
+        // sudo apt-get install git
+        // Get current Git Branch name
+        $gitBranch = new Process( "git rev-parse --abbrev-ref HEAD" );
+        $gitBranch->run();
+
+        if( !$gitBranch->isSuccessful() ){
+            throw new ProcessFailedException( $gitBranch );
+        }
+
+        // return Current Git Branch Name from command output
+        return $gitBranch->getOutput();
+
+    } //- END function branchName()
+
+} //- END class Git{}
