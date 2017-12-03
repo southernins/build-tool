@@ -11,19 +11,16 @@ use SouthernIns\BuildTool\Commands\BuildProdCommand;
 class BuildServiceProvider extends ServiceProvider {
 
     public function boot(){
-
-        if( $this->app->runningInConsole() ){
-            $this->commands([
-                BuildCommand::class
-            ]);
-        }
+        // Boot runs after ALL providers are registered
 
     } //- END function boot()
 
     public function register(){
         if( $this->app->runningInConsole() ){
             $this->commands([
-                BuildDevCommand::class
+                BuildDevCommand::class,
+                BuildCommand::class,
+                BuildProdCommand::class
             ]);
         }
 
