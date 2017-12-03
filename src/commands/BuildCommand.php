@@ -65,7 +65,7 @@ class BuildCommand extends Command {
 
     } //- END __construct()
 
-    
+
     /**
      * Execute the console command.
      *
@@ -225,6 +225,7 @@ class BuildCommand extends Command {
             $this->error( "Creating a Production Deployment from a Branch other than Master" );
             if( !$this->confirm( "Are you sure this is what you would like to do?" )){
                 $this->error( "Build Process Terminated!" );
+                exit();
                 return;
             }
         }
