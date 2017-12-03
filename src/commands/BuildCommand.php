@@ -149,7 +149,7 @@ class BuildCommand extends Command {
 
         $version = Carbon::now()->format('Y.m.d.Hi');
 
-        if( !$this->isProduction() ){
+        if( !$this->isProduction( $environment ) ){
 
             // Label non production builds with the current Environment
             $version = $version ."_" . $environment;
