@@ -28,6 +28,14 @@ Add the following to require-dev of composer.json
 
 Then run `composer update` or `composer install` as needed.
 
+
+    php artisan list
+should then show the following dcommands
+    
+    build 
+    build:dev
+    build:prod
+    
 ## Usage
 
 once installed a build can be created by running the following.
@@ -36,12 +44,17 @@ once installed a build can be created by running the following.
 
     php artisan build:prod
     
+which is a shortcut for
+    
     php artisan build --env="production"
     
     
 ### Development/Staging
 
     php artisan build:dev
+    
+which is a shortcut for
+
     php artisan build --env="dev"
     
     
