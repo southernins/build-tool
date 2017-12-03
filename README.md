@@ -38,7 +38,7 @@ should then show the following dcommands
     
 ## Usage
 
-once installed a build can be created by running the following.
+once installed a use the following based on the required build type.
 
 ### Production 
 
