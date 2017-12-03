@@ -5,26 +5,26 @@
 use Illuminate\Console\Command;
 
 /**
- * Class BuildDevCommand
+ * Class BuildProdCommand
  *
- * Shortcut for php artisan build --env dev
+ * Shortcut for php artisan build --env production
+ *
  */
-
-class BuildDevCommand extends Command {
+class BuildProdCommand extends Command {
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'build:dev';
+    protected $signature = 'build:prod';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Build Dev Deployment for Testing/Staging';
+    protected $description = 'Build Production Deployment';
 
     /**
      * Create a new command instance.
@@ -44,9 +44,9 @@ class BuildDevCommand extends Command {
         //
 
         $this->call( "build", [
-            '--env' => 'dev'
+            '--env' => 'production'
         ]);
-
+        
     } //- END function handle()
 
-} //- END class BuildDevCommand {}
+} //- END class BuildProdCommand {}

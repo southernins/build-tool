@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\App;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
+use SouthernIns\BuildTool\Shell\Composer;
+use SouthernIns\BuildTool\Shell\Git;
+use SouthernIns\BuildTool\Shell\NPM;
+
 class BuildCommand extends Command {
     /**
      * The name and signature of the console command.
@@ -24,14 +28,42 @@ class BuildCommand extends Command {
      */
     protected $description = 'Create Production Build File for Deployment';
 
+
+    /**
+     * Environment to deploy
+     * @var string
+     */
+    protected $envionrment = 'dev';
+
+    /**
+     *
+     * @var string
+     */
+    protected $projectPath = '';
+
+    protected $projectFolder = '';
+
+
     /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct() {
+
         parent::__construct();
-    }
+
+        // Set build envrionment from app envrionment
+        // Set with --env on artisan command
+        $this->environment = App::environment();
+
+        // Set folderName and Path for project
+        $this->projectPath = base_path();
+        $dirArr = explode("/", $this->projectPath) ;
+
+        $this->projectFolder = end( $dirArr );
+
+    } //- END __construct()
 
     /**
      * Execute the console command.
@@ -40,72 +72,68 @@ class BuildCommand extends Command {
      */
     public function handle() {
 
-        $environment = App::environment();
+        $this->build( $this->environment );
+
+    } // END function handle()
 
 
-        $this->createBuildFile( $environment );
+    protected function build( $environment ){
 
+        $version = $this->buildVersion( $environment );
 
-        $curBranch = $this->branchName();
+        $this->info( "Creating $this->projectFolder - $environment Build verion $version" );
 
-        if( $environment == "production" ){
+        $this->clearCache( $environment );
 
-            $this->comment( "Removing Composer Dev Dependencies" );
-            // Run composer install --no-dev to prevent Dev Deps from pushing t production
-            $composer_prod = new Process('composer install --no-dev --optimize-autoloader --no-interaction');
-            $composer_prod->start();
-            $iterator = $composer_prod->getIterator($composer_prod::ITER_SKIP_ERR | $composer_prod::ITER_KEEP_OUTPUT);
-            foreach ($iterator as $data) {
-                echo $data."\n";
-            }
+        if( $this->isProduction( $environment )){
 
             $restoreDev = true;
 
-            if( $curBranch != "master" ){
+            $this->confirmMasterBranch();
 
-                $this->error( "Creating a Production Deployment from a Branch other than Master" );
-                if( !$this->confirm( "Are you sure this is what you would like to do?" )){
-                    $this->error( "Build Process Terminated!" );
-                    return;
-                }
-            }
+            Composer::installNoDev();
 
             $this->comment( "Running NPM Production Script" );
 
-            // Install Node
-            // curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-            // sudo apt-get install -y nodejs
-            $npmProduction = new Process( "npm run production" );
-            $npmProduction->start();
-
-            $iterator = $npmProduction->getIterator($npmProduction::ITER_SKIP_ERR | $npmProduction::ITER_KEEP_OUTPUT);
-            foreach( $iterator as $data ){
-                echo $data."\n";
-            }
+            NPM::runProduction();
 
         } else {
 
             // Label non production builds with the current Environment
-            $version = $version ."_" . $environment;
+//            $version = $version ."_" . $environment;
 
             $this->comment( "Running NPM Dev Script" );
-
-            $npmProduction = new Process( "npm run dev" );
-            $npmProduction->start();
-
-            $iterator = $npmProduction->getIterator($npmProduction::ITER_SKIP_ERR | $npmProduction::ITER_KEEP_OUTPUT);
-            foreach( $iterator as $data ){
-                echo $data."\n";
-            }
+            NPM::runDev();
 
         } // END if production
 
         // delay a few seconds to ensure composer completion
         sleep( 10 );
 
+        if( $restoreDev === true ){
+
+            // Composer install goes here
+            Composer::install();
+
+        }
+
+        // copy specified environment to .env
+        $devEnv = $this->projectPath . "/environments/.env.dev";
+        if( file_exists( $devEnv )){
+            copy( $devEnv, $this->projectPath . "/.env" );
+        }  //- END file_exists()
+
+        $this->info( "Build Completed Successfully" );
+
+    } //- END function build()
+
+
+
+    protected function createBuildFile( $version ){
+
         $this->comment( "Creating Build File" );
 
-        $createBuild = new Process( 'zip -r -q ' . $projectPath . '_v-' . $version .'.zip ./ -i@build-include.list' );
+        $createBuild = new Process( 'zip -r -q ' . $this->projectPath . '_v-' . $version .'.zip ./ -i@build-include.list' );
         $createBuild->run();
 
         if( !$createBuild->isSuccessful() ){
@@ -114,80 +142,19 @@ class BuildCommand extends Command {
 
         echo $createBuild->getOutput();
 
-        if( $restoreDev === true ){
-
-            $this->comment( "Restoring Composer Dev Dependencies" );
-            // Run composer install --no-dev to prevent Dev Deps from pushing t production
-            $composerDev = new Process('composer install' );
-            $composerDev->start();
-            $iterator = $composerDev->getIterator($composerDev::ITER_SKIP_ERR | $composerDev::ITER_KEEP_OUTPUT) ;
-            foreach ( $iterator as $data ) {
-                echo $data."\n";
-            }
-
-        }
-
-        // copy specified environment to .env
-        $devEnv = $projectPath . "/environments/.env.dev";
-        if( file_exists( $devEnv )){
-            copy( $devEnv, $projectPath . "/.env" );
-        }  //- END file_exists()
-
-        $this->info( "Build Completed Successfully" );
-
-    } // END function handle()
-
-
-    protected function createBuildFile( $environment ){
-
-        $projectPath = base_path();
-
-        $dirArr = explode("/", $projectPath);
-
-        $projectFolder = end( $dirArr );
-
-        $version = $this->buildVersion();
-
-        $this->info( "Creating $projectFolder - $environment Build verion $version" );
-
-        $this->clearCache( $environment );
-
     } //- END function createBuildFile()
 
-
-
-    /**
-     * function to get the Curent Branch Name
-     *
-     * @return string
-     */
-    protected function branchName(){
-
-        // INSTALL git in Guest OS
-        // sudo apt-get install git
-        // Get current Git Branch name
-        $gitBranch = new Process( "git rev-parse --abbrev-ref HEAD" );
-        $gitBranch->run();
-
-        if( !$gitBranch->isSuccessful() ){
-            throw new ProcessFailedException( $gitBranch );
-        }
-
-        // return Current Git Branch Name from command output
-        return $gitBranch->getOutput();
-
-    } //- END function branchName()
 
     protected function buildVersion( $environment ){
 
         $version = Carbon::now()->format('Y.m.d.Hi');
 
-        if( $environment != 'production' ){
+        if( !$this->isProduction() ){
 
             // Label non production builds with the current Environment
             $version = $version ."_" . $environment;
-        } //- END if( is production )
 
+        } //- END if( is production )
 
         return $version;
 
@@ -202,18 +169,18 @@ class BuildCommand extends Command {
 //        ] );
         $this->comment( "Clearing App Cache" );
 
-        $this->call("cache:clear", [
+        $this->call( "cache:clear", [
             '--env' => $environment
         ]);
     } //- END function clearCache()
 
     protected function setEnvironmentFile( $environment ){
 
-        $newEnv = $projectPath . "/environments/.env." . $environment;
+        $newEnv = $this->projectPath . "/environments/.env." . $environment;
 
         // copy specified environment to .env
         if( file_exists( $newEnv )){
-            copy( $newEnv, $projectPath . "/.env" );
+            copy( $newEnv, $this->projectPath . "/.env" );
         }  //- END file_exists()
 
         // Removed php artisan optimize from Composer.json
@@ -227,4 +194,35 @@ class BuildCommand extends Command {
 
     } //- END function setEnvironmentFile()
 
-}
+    /**
+     * returns true if current envrionment is set to "production"
+     *
+     * @param
+     *
+     * @return bool
+     */
+    protected function isProduction( $environment ){
+
+        return ( $environment == "production" );
+
+    }
+
+    /**
+     * Check if git branch is "master"
+     * and get confrimation for any other branch.
+     *
+     */
+    protected function confirmMasterBranch(){
+
+        if( Git::branchName() != "master" ){
+
+            $this->error( "Creating a Production Deployment from a Branch other than Master" );
+            if( !$this->confirm( "Are you sure this is what you would like to do?" )){
+                $this->error( "Build Process Terminated!" );
+                return;
+            }
+        }
+
+    } //- END fuction confirmMasterBranch()
+
+} //- END class BuildCommand{}
