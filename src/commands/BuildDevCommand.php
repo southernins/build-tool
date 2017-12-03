@@ -44,9 +44,10 @@ class BuildDevCommand extends Command {
     public function handle() {
         //
 
-        $this->call( "build", [
-            '--env' => 'dev'
-        ]);
+        $this->info( App::environment() );
+//        $this->call( "build", [
+//            '--env' => 'dev'
+//        ]);
 
     } //- END function handle()
 

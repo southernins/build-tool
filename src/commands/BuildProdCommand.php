@@ -42,7 +42,6 @@ class BuildProdCommand extends Command {
      * @return mixed
      */
     public function handle() {
-        //
 
         $this->call( "build", [
             '--env' => 'production'

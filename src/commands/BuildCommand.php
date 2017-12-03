@@ -65,6 +65,7 @@ class BuildCommand extends Command {
 
     } //- END __construct()
 
+    
     /**
      * Execute the console command.
      *
@@ -72,6 +73,7 @@ class BuildCommand extends Command {
      */
     public function handle() {
 
+        $this->info( $this->environment );
         $this->build( $this->environment );
 
     } // END function handle()
@@ -85,16 +87,17 @@ class BuildCommand extends Command {
 
         $this->clearCache( $environment );
 
+        $this->info( $environment );
         if( $this->isProduction( $environment )){
 
             $restoreDev = true;
 
             $this->confirmMasterBranch();
 
+            $this->comment( "Removing Composer Dev Dependencies" );
             Composer::installNoDev();
 
             $this->comment( "Running NPM Production Script" );
-
             NPM::runProduction();
 
         } else {
@@ -106,6 +109,9 @@ class BuildCommand extends Command {
             NPM::runDev();
 
         } // END if production
+
+        // Create Build .zip Package
+        $this->createBuildFile( $version );
 
         // delay a few seconds to ensure composer completion
         sleep( 10 );
