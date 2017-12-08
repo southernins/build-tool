@@ -74,6 +74,7 @@ class BuildCommand extends Command {
     public function handle() {
 
         $this->info( $this->environment );
+
         $this->build( $this->environment );
 
     } // END function handle()
@@ -88,6 +89,7 @@ class BuildCommand extends Command {
         $this->clearCache( $environment );
 
         $this->info( $environment );
+
         if( $this->isProduction( $environment )){
 
             $restoreDev = true;
@@ -178,6 +180,7 @@ class BuildCommand extends Command {
         $this->call( "cache:clear", [
             '--env' => $environment
         ]);
+
     } //- END function clearCache()
 
     protected function setEnvironmentFile( $environment ){
@@ -215,7 +218,7 @@ class BuildCommand extends Command {
 
     /**
      * Check if git branch is "master"
-     * and get confrimation for any other branch.
+     * and get confirmation for any other branch.
      *
      */
     protected function confirmMasterBranch(){
@@ -226,10 +229,10 @@ class BuildCommand extends Command {
             if( !$this->confirm( "Are you sure this is what you would like to do?" )){
                 $this->error( "Build Process Terminated!" );
                 exit();
-                return;
+//                return;
             }
         }
 
-    } //- END fuction confirmMasterBranch()
+    } //- END function confirmMasterBranch()
 
 } //- END class BuildCommand{}

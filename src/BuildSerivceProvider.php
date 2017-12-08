@@ -16,6 +16,7 @@ class BuildServiceProvider extends ServiceProvider {
     } //- END function boot()
 
     public function register(){
+
         if( $this->app->runningInConsole() ){
             $this->commands([
                 BuildDevCommand::class,

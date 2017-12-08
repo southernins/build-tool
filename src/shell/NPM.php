@@ -19,8 +19,6 @@ class NPM {
      */
     static function runProduction(){
 
-//        $this->comment( "Running NPM Production Script" );
-
         // Install Node
         // curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
         // sudo apt-get install -y nodejs
@@ -39,12 +37,10 @@ class NPM {
      */
     static function runDev(){
 
-//        $this->comment( "Running NPM Dev Script" );
-
         $npmProduction = new Process( "npm run dev" );
         $npmProduction->start();
 
-        $iterator = $npmProduction->getIterator($npmProduction::ITER_SKIP_ERR | $npmProduction::ITER_KEEP_OUTPUT);
+        $iterator = $npmProduction->getIterator( $npmProduction::ITER_SKIP_ERR | $npmProduction::ITER_KEEP_OUTPUT );
         foreach( $iterator as $data ){
             echo $data."\n";
         }
