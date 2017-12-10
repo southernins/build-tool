@@ -13,7 +13,9 @@ use SouthernIns\BuildTool\Shell\Composer;
 use SouthernIns\BuildTool\Shell\Git;
 use SouthernIns\BuildTool\Shell\NPM;
 
+
 class BuildCommand extends Command {
+
     /**
      * The name and signature of the console command.
      *
@@ -80,6 +82,12 @@ class BuildCommand extends Command {
     } // END function handle()
 
 
+    /**
+     * run the entire build process
+     *
+     * @param $environment string laravel environment to use
+     *
+     */
     protected function build( $environment ){
 
         $version = $this->buildVersion( $environment );
@@ -136,7 +144,12 @@ class BuildCommand extends Command {
     } //- END function build()
 
 
-
+    /**
+     *
+     * Create the build deployment pacakge.
+     *
+     * @param $version string version to use when creating build file.
+     */
     protected function createBuildFile( $version ){
 
         $this->comment( "Creating Build File" );
@@ -153,6 +166,12 @@ class BuildCommand extends Command {
     } //- END function createBuildFile()
 
 
+    /**
+     * Generate build version string from date.
+     *
+     * @param $environment laravel envrionment to use for build
+     * @return string  version of the current build
+     */
     protected function buildVersion( $environment ){
 
         $version = Carbon::now()->format('Y.m.d.Hi');
@@ -168,6 +187,12 @@ class BuildCommand extends Command {
 
     } //- END function buildVersion()
 
+    /**
+     * call laravel cache:clear artisan command
+     *
+     * @param $environment laravel envrionment to use
+     *
+     */
     protected function clearCache( $environment ){
 
         // TEST this... it may be a  way to push
@@ -183,6 +208,12 @@ class BuildCommand extends Command {
 
     } //- END function clearCache()
 
+    /**
+     * Copy selected env file from environments folder to root project env
+     * prior to build
+     *
+     * @param $environment laraven environment file to use
+     */
     protected function setEnvironmentFile( $environment ){
 
         $newEnv = $this->projectPath . "/environments/.env." . $environment;
@@ -206,7 +237,7 @@ class BuildCommand extends Command {
     /**
      * returns true if current envrionment is set to "production"
      *
-     * @param
+     * @param $environment laravel envrionment to use during build
      *
      * @return bool
      */
