@@ -5,10 +5,20 @@ AWS Elastic Beanstalk Hosted Projects
 
 ## Requirements
 
-- Laravel 5.5+
-- Git must be installed `sudo apt-get install git`
-- zip must be installed `sudo apt-get install zip`
-- NPM and Node ( version??? )
+  - Laravel 5.5+
+  - Git must be installed ( Addd to Vagrant Bootstrap.sh )  
+    `sudo apt-get install git`
+  - zip must be installed ( Addd to Vagrant Bootstrap.sh )  
+    `sudo apt-get install zip`
+  - NPM and Node ( version??? )  
+    
+    
+    
+    // Install Node manually ( or run /vagrant/ops/nodejs.sh)
+    // nodejs.sh includes "n" for node version managemnet.
+    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+
 
 
 ## Installation
