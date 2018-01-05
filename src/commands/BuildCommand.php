@@ -104,11 +104,17 @@ class BuildCommand extends Command {
 
             $this->confirmMasterBranch();
 
-            $this->comment( "Removing Composer Dev Dependencies" );
-            Composer::installNoDev();
-
+            // relocated this to run BEFORE composer installNoDev
+            // uninstalling composer dev deps removes this... so DUH
+            // the NPM Class is no longer available.
+            // Question is whill anything work after composer installNoDev.
+            // This package may NEED to be Production..
+            // But does not need to be deployed... how do i manaage that??
             $this->comment( "Running NPM Production Script" );
             NPM::runProduction();
+
+            $this->comment( "Removing Composer Dev Dependencies" );
+            Composer::installNoDev();
 
         } else {
 
