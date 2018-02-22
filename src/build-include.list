@@ -1,0 +1,13 @@
+app/*
+bootstrap/*
+config/*
+database/*
+public/*
+resources/*
+routes/*
+storage/*
+vendor/*
+.ebextensions/*
+.env
+composer.json
+artisan

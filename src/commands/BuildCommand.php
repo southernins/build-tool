@@ -129,18 +129,25 @@ class BuildCommand extends Command {
         // Create Build .zip Package
         $this->createBuildFile( $version );
 
+//        $this->comment( "Build Zip File Created - Now Sleeping" );
+
         // delay a few seconds to ensure composer completion
         sleep( 10 );
+
+//        $this->comment( " Slept, Now restoring if neccessary" );
 
         if( $restoreDev === true ){
 
             // Composer install goes here
             Composer::install();
+//            $this->comment( "Dev deeps Restored" );
 
         }
 
+//        $this->comment( "REstoring env file" );
         // copy specified environment to .env
         $devEnv = $this->projectPath . "/environments/.env.dev";
+
         if( file_exists( $devEnv )){
             copy( $devEnv, $this->projectPath . "/.env" );
         }  //- END file_exists()
@@ -160,11 +167,28 @@ class BuildCommand extends Command {
 
         $this->comment( "Creating Build File" );
 
-        $createBuild = new Process( 'zip -r -q ' . $this->projectPath . '_v-' . $version .'.zip ./ -i@build-include.list' );
+        // find and check build-include.list exists
+        if( file_exists($this->projectFolder . "/build-include.list" ) ){
+            $include_file = $this->projectFolder . "/build-include.list";
+            $this->info( "Using Build Include list overridden by project." );
+
+        } else {
+            $include_file = __DIR__ . "/../build-include.list";
+            $this->info( "Using Lib build-include.list." );
+            $this->info( "to override the list place a build-include.list in the project directory." );
+        }
+
+        $createBuild = new Process( 'zip -r -q ' . $this->projectPath . '_v-' . $version .'.zip ./ -i' . $include_file );
         $createBuild->run();
 
         if( !$createBuild->isSuccessful() ){
+
+            if( $createBuild->getExitCode() == 127 ){
+                $this->termiateCommand( "Zip Command failed, please confirm it is installed ( sudo apt-get install zip )" );
+            }
+
             throw new ProcessFailedException( $createBuild );
+
         }
 
         echo $createBuild->getOutput();
@@ -264,12 +288,22 @@ class BuildCommand extends Command {
 
             $this->error( "Creating a Production Deployment from a Branch other than Master" );
             if( !$this->confirm( "Are you sure this is what you would like to do?" )){
-                $this->error( "Build Process Terminated!" );
-                exit();
+//                $this->error( "Build Process Terminated!" );
+//                exit();
 //                return;
+
+                $this->termiateCommand();
             }
         }
 
     } //- END function confirmMasterBranch()
+
+    protected function termiateCommand( $message = '' ) {
+        if( $message != '' ){
+            $this->error( $message );
+        }
+        $this->error( "Build Process Terminated!" );
+        exit();
+    }
 
 } //- END class BuildCommand{}
