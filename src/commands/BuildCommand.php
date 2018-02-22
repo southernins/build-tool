@@ -6,6 +6,8 @@ namespace SouthernIns\BuildTool\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
+
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -114,7 +116,7 @@ class BuildCommand extends Command {
             NPM::runProduction();
 
             $this->comment( "Removing Composer Dev Dependencies" );
-            Composer::installNoDev();
+//            Composer::installNoDev();
 
         } else {
 
@@ -129,22 +131,16 @@ class BuildCommand extends Command {
         // Create Build .zip Package
         $this->createBuildFile( $version );
 
-//        $this->comment( "Build Zip File Created - Now Sleeping" );
-
         // delay a few seconds to ensure composer completion
         sleep( 10 );
-
-//        $this->comment( " Slept, Now restoring if neccessary" );
 
         if( $restoreDev === true ){
 
             // Composer install goes here
             Composer::install();
-//            $this->comment( "Dev deeps Restored" );
 
         }
 
-//        $this->comment( "REstoring env file" );
         // copy specified environment to .env
         $devEnv = $this->projectPath . "/environments/.env.dev";
 
@@ -167,18 +163,16 @@ class BuildCommand extends Command {
 
         $this->comment( "Creating Build File" );
 
-        // find and check build-include.list exists
-        if( file_exists($this->projectFolder . "/build-include.list" ) ){
-            $include_file = $this->projectFolder . "/build-include.list";
-            $this->info( "Using Build Include list overridden by project." );
+        $include_list = Config::get( 'build-tool.include' );
 
-        } else {
-            $include_file = __DIR__ . "/../build-include.list";
-            $this->info( "Using Lib build-include.list." );
-            $this->info( "to override the list place a build-include.list in the project directory." );
+        $include ='';
+        if( count( $include_list ) > 0 ) {
+            $include = '-i ' . implode( $include_list, ' ' );
         }
 
-        $createBuild = new Process( 'zip -r -q ' . $this->projectPath . '_v-' . $version .'.zip ./ -i' . $include_file );
+        $command = 'zip -r -q ' . $this->projectPath . '_v-' . $version .'.zip ./ ' . $include ;
+
+        $createBuild = new Process( $command  );
         $createBuild->run();
 
         if( !$createBuild->isSuccessful() ){
@@ -253,14 +247,14 @@ class BuildCommand extends Command {
             copy( $newEnv, $this->projectPath . "/.env" );
         }  //- END file_exists()
 
-        // Removed php artisan optimize from Composer.json
-        // Running this in composer ignored the current environment
-        // set by --env
-        // optimize is being depreciated in 5.5 and removed in 5.6...
-        // TODO:: remove when laravel upgraded to 5.5
-        $this->call( "optimize",[
-            '--env' => $environment
-        ] );
+//        // Removed php artisan optimize from Composer.json
+//        // Running this in composer ignored the current environment
+//        // set by --env
+//        // optimize is being depreciated in 5.5 and removed in 5.6...
+//        // TODO:: remove when laravel upgraded to 5.5
+//        $this->call( "optimize",[
+//            '--env' => $environment
+//        ] );
 
     } //- END function setEnvironmentFile()
 

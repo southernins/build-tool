@@ -28,6 +28,12 @@
         "SouthernIns\\BuildTool\\BuildServiceProvider"
       ]
     }
+  },
+
+  "scripts": {
+    "post-package-install": [
+      "SouthernIns\\BuildTool\\PostInstall::init"
+    ]
   }
 
 }
