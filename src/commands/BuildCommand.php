@@ -92,7 +92,7 @@ class BuildCommand extends Command {
 
         $version = $this->buildVersion( $environment );
 
-        $this->info( "Creating $this->projectFolder - $environment Build verion $version" );
+        $this->info( "Creating $this->projectFolder - $environment Build version $version" );
 
         $this->clearCache( $environment );
 

@@ -4,6 +4,7 @@
 namespace SouthernIns\BuildTool\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 
 /**
  * Class BuildDevCommand
