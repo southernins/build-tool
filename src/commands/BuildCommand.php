@@ -171,7 +171,7 @@ class BuildCommand extends Command {
 //        Zip::buildFile( $build_file, $include_list );
 
 
-        $command = 'zip -r -q ' . $build_file . ' ./ ' . $include_list ;
+        $command = 'zip -r -q ' . $build_file . ' ./ ' . $include ;
 
         $createBuild = new Process( $command  );
         $createBuild->run();
