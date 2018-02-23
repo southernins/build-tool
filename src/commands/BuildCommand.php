@@ -16,7 +16,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use SouthernIns\BuildTool\Shell\Composer;
 
 use SouthernIns\BuildTool\Shell\NPM;
-use SouthernIns\BuildTool\Shell\Zip;
+//use SouthernIns\BuildTool\Shell\Zip;
 
 
 class BuildCommand extends Command {
@@ -168,7 +168,26 @@ class BuildCommand extends Command {
 
         $build_file = $build . '_v-' . $version .'.zip';
 
-        Zip::buildFile( $build_file, $include_list );
+//        Zip::buildFile( $build_file, $include_list );
+
+
+        $command = 'zip -r -q ' . $build_file . ' ./ ' . $include_list ;
+
+        $createBuild = new Process( $command  );
+        $createBuild->run();
+
+        if( !$createBuild->isSuccessful() ){
+
+//            $this->handleCommandError();
+            if( $createBuild->getExitCode() == 127 ){
+//                $this->terminateCommand( "Zip Command failed, please confirm it is installed ( sudo apt-get install zip )" );
+            }
+
+            throw new ProcessFailedException( $createBuild );
+
+        }
+
+        echo $createBuild->getOutput();
 
     } //- END function createBuildFile()
 
