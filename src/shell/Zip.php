@@ -6,7 +6,7 @@
  * Time: 10:34 AM
  */
 
-namespace SouthernIns\BuildTool\shell;
+namespace SouthernIns\BuildTool\Shell;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
