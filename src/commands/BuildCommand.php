@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Config;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-//use SouthernIns\BuildTool\Shell\Composer;
+use SouthernIns\BuildTool\Shell\Composer;
 
 use SouthernIns\BuildTool\Shell\NPM;
 use SouthernIns\BuildTool\Shell\Zip;
@@ -51,7 +51,7 @@ class BuildCommand extends Command {
 
     protected $projectFolder = '';
 
-    protected $restoreEnv = false;
+    protected $restoreComposer = false;
 
 
     /**
@@ -112,7 +112,7 @@ class BuildCommand extends Command {
 
         if( $this->isProduction( $environment )){
 
-            $this->restoreEnv = true;
+            $this->restoreComposer = true;
 
             // get Confrimation if user is deploying production
             // to a Git Branch other than 'master'
@@ -138,7 +138,7 @@ class BuildCommand extends Command {
         sleep( 2 );
 
         // restore Dev Dependencies if they were removed
-        if( $this->restoreEnv === true ){
+        if( $this->restoreComposer === true ){
             Composer::install();
         }
 
@@ -161,7 +161,7 @@ class BuildCommand extends Command {
 
         $include_list = Config::get( 'build-tool.include' );
 
-        $include ='';
+        $include = '';
         if( count( $include_list ) > 0 ) {
             $include = '-i ' . implode( $include_list, ' ' );
         }
