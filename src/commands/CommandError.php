@@ -12,15 +12,16 @@ namespace SouthernIns\BuildTool\commands;
 //use Throwable;
 use Illuminate\Console\Command;
 
+
 class CommandError extends \RuntimeException {
 
-    public function __construct( Command $artisanCommand, $message = [] ){
+    public function __construct( BuildCommand $artisanCommand, $message = '' ){
 
-        foreach( $message as $line ){
-            $artisanCommand->error( $line );
+        if( $message ){
+            $artisanCommand->error( $message );
         }
 
-        $artisanCommand->error( "Build Process Terminated!" );
+//        $artisanCommand->error( "Build Process Terminated!" );
 
         parent::__construct( 'Build command resulted in an error, Process Terminated!' );
 

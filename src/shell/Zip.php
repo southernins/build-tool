@@ -8,10 +8,12 @@
 
 namespace SouthernIns\BuildTool\shell;
 
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Zip {
 
-    public function buildFile( $fileName, $includeFiles ){
+    static function buildFile( $fileName, $includeFiles ){
 //        $command = 'zip -r -q ' . $this->projectPath . '_v-' . $version .'.zip ./ ' . $include ;
         $command = 'zip -r -q ' . $fileName . ' ./ ' . $includeFiles ;
 
@@ -22,7 +24,7 @@ class Zip {
 
 //            $this->handleCommandError();
             if( $createBuild->getExitCode() == 127 ){
-                $this->terminateCommand( "Zip Command failed, please confirm it is installed ( sudo apt-get install zip )" );
+//                $this->terminateCommand( "Zip Command failed, please confirm it is installed ( sudo apt-get install zip )" );
             }
 
             throw new ProcessFailedException( $createBuild );

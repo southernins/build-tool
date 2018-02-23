@@ -51,6 +51,8 @@ class BuildCommand extends Command {
 
     protected $projectFolder = '';
 
+    protected $restoreEnv = false;
+
 
     /**
      * Create a new command instance.
@@ -71,12 +73,7 @@ class BuildCommand extends Command {
 
         $this->projectFolder = end( $dirArr );
 
-        if( !Config::has( 'build-tool' ) ){
-
-            $configArr = include __DIR__ . '/../config/build-tool.php';
-            Config::push( 'build-tool', $configArr );
-        }
-//        $build_config = Config::get( 'build-tool' );
+        $this->checkConfig();
 
     } //- END __construct()
 
@@ -103,36 +100,31 @@ class BuildCommand extends Command {
      */
     protected function build( $environment ){
 
-        $version = $this->buildVersion( $environment );
+        $buildVersion   = $this->buildVersion( $environment );
+        $buildName      = $this->buildName();
 
-        $this->info( "Creating $this->projectFolder - $environment Build version $version" );
+        $this->info( "Creating $buildName - $environment Build version $buildVersion" );
 
         $this->clearCache( $environment );
 
-        $this->info( $environment );
+        $this->info( 'Setting Environment to - ' . $environment );
+        $this->setEnvironmentFile( $environment );
 
         if( $this->isProduction( $environment )){
 
-            $restoreDev = true;
+            $this->restoreEnv = true;
 
+            // get Confrimation if user is deploying production
+            // to a Git Branch other than 'master'
             $this->confirmMasterBranch();
 
-            // relocated this to run BEFORE composer installNoDev
-            // uninstalling composer dev deps removes this... so DUH
-            // the NPM Class is no longer available.
-            // Question is whill anything work after composer installNoDev.
-            // This package may NEED to be Production..
-            // But does not need to be deployed... how do i manaage that??
             $this->comment( "Running NPM Production Script" );
             NPM::runProduction();
 
             $this->comment( "Removing Composer Dev Dependencies" );
-//            Composer::installNoDev();
+            Composer::installNoDev();
 
         } else {
-
-            // Label non production builds with the current Environment
-//            $version = $version ."_" . $environment;
 
             $this->comment( "Running NPM Dev Script" );
             NPM::runDev();
@@ -140,24 +132,17 @@ class BuildCommand extends Command {
         } // END if production
 
         // Create Build .zip Package
-        $this->createBuildFile( $version );
+        $this->createBuildFile( $buildName, $buildVersion );
 
-        // delay a few seconds to ensure composer completion
-        sleep( 10 );
+        // short delay to ensure composer completion
+        sleep( 2 );
 
-        if( $restoreDev === true ){
-
-            // Composer install goes here
-//            Composer::install();
-
+        // restore Dev Dependencies if they were removed
+        if( $this->restoreEnv === true ){
+            Composer::install();
         }
 
-        // copy specified environment to .env
-        $devEnv = $this->projectPath . "/environments/.env.dev";
-
-        if( file_exists( $devEnv )){
-            copy( $devEnv, $this->projectPath . "/.env" );
-        }  //- END file_exists()
+        $this->restoreEnvironmentFile( );
 
         $this->info( "Build Completed Successfully" );
 
@@ -170,36 +155,20 @@ class BuildCommand extends Command {
      *
      * @param $version string version to use when creating build file.
      */
-    protected function createBuildFile( $version ){
+    protected function createBuildFile( $build, $version ){
 
         $this->comment( "Creating Build File" );
 
-
         $include_list = Config::get( 'build-tool.include' );
-        $config_file = Config::has( 'build-tool' );
-        $build_config = Config::get( 'build-tool' );
-//
-//        dump( $config_file );
-//        dump( $build_config );
-//
-//        dump( Config::all() );
-//
-//        dd( "stoped" );
-
-
-        $build_file = $this->projectPath . '_v-' . $version .'.zip';
-
-///$this->projectPath . '_v-' . $version .'.zip
-///
-///
 
         $include ='';
         if( count( $include_list ) > 0 ) {
             $include = '-i ' . implode( $include_list, ' ' );
         }
 
-        Zip::buildFile( $build_file, $include_list );
+        $build_file = $build . '_v-' . $version .'.zip';
 
+        Zip::buildFile( $build_file, $include_list );
 
     } //- END function createBuildFile()
 
@@ -259,18 +228,6 @@ class BuildCommand extends Command {
         exit();
     }
 
-    protected function testConfig(){
-        $include_list = Config::get( 'build-tool.include' );
-        $config_file = Config::has( 'build-tool' );
-        $build_config = Config::get( 'build-tool' );
 
-        dump( $config_file );
-        dump( $build_config );
-
-        dump( Config::all() );
-
-
-        throw new CommandError($this, 'stopped' );
-    }
 
 } //- END class BuildCommand{}

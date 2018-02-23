@@ -3,6 +3,8 @@
 namespace SouthernIns\BuildTool\Commands;
 
 use SouthernIns\BuildTool\Shell\Git;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 
 trait BuildDeployment {
 
@@ -30,12 +32,10 @@ trait BuildDeployment {
 
         $version = Carbon::now()->format('Y.m.d.Hi');
 
+        // Label non production builds with the current Environment
         if( !$this->isProduction( $environment ) ){
-
-            // Label non production builds with the current Environment
             $version = $version ."_" . $environment;
-
-        } //- END if( is production )
+        }
 
         return $version;
 
@@ -43,7 +43,8 @@ trait BuildDeployment {
 
     protected function buildName(){
 
-        return $name;
+        return Config::get( 'build-tool.name' );
+
     }
 
     /**
@@ -54,23 +55,38 @@ trait BuildDeployment {
      */
     protected function setEnvironmentFile( $environment ){
 
+        rename( base_path() . '/.env', base_path() . '/.env.previous' );
+
         $newEnv = base_path() . "/environments/.env." . $environment;
 
-        // copy specified environment to .env
-        if( file_exists( $newEnv )){
-            copy( $newEnv, base_path() . "/.env" );
-        }  //- END file_exists()
+        copy( $newEnv, base_path() . "/.env" );
+
 
     } //- END function setEnvironmentFile()
 
-    protected function isNotBranch( $branchName ){
+    protected function restoreEnvironmentFile(){
+//        $envFile = base_path() . '/.env.previous';
 
-        return  Git::branchName() != $branchName;
-
+        rename( base_path() . '/.env.previous', base_path() . '/.env' );
     }
 
+    protected function isNotBranch( $branchName ){
+        return  Git::branchName() != $branchName;
+    }
 
+    /**
+     * Check for App config values, sets default if not found
+     *
+     */
+    protected function checkConfig(){
 
+        // If no config file was found use defaults
+        if( !Config::has( 'build-tool' ) ){
+            $configArr = include __DIR__ . '/../config/build-tool.php';
+            Config::set( 'build-tool', $configArr );
+        }
+
+    } //- END checkConfig()
 
 
 } //- END trait BuildDeployment {}
