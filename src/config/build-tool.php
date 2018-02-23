@@ -12,6 +12,11 @@ return [
 
     'name' => str_slug( env( 'APP_NAME', 'build' ), '_' ),
 
+
+    // Add BuildFile Output Directory as Config item
+
+    // Add Environment File Source as Directory
+
     /*
     |--------------------------------------------------------------------------
     | Files included in Build

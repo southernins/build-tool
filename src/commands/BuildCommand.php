@@ -166,7 +166,7 @@ class BuildCommand extends Command {
             $include = '-i ' . implode( $include_list, ' ' );
         }
 
-        $build_file = $build . '_v-' . $version .'.zip';
+        $build_file =  base_path() . '/../' . $build . '_v-' . $version .'.zip';
 
 //        Zip::buildFile( $build_file, $include_list );
 
