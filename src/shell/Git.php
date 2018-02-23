@@ -14,6 +14,9 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Git {
 
+    // TODO:: Confirm git is installed
+
+
     /**
      * function to get the Curent Branch Name
      *

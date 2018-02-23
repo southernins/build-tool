@@ -14,6 +14,12 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class NPM {
 
+
+    // TODO:: Confirm Node AND npm are installed
+
+    // TODO:: Confirm NPM Install has been ran.... check for node_modules???
+
+
     /**
      * Run npm production
      */

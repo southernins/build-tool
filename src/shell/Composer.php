@@ -14,6 +14,8 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Composer {
 
+    // TODO:: Confirm composer is installed
+
     /**
      * run composer install
      *

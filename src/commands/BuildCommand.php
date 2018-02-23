@@ -108,13 +108,16 @@ class BuildCommand extends Command {
         $this->clearCache( $environment );
 
         $this->info( 'Setting Environment to - ' . $environment );
+
+        // Try Catch may be needed after this point to restore env.previous on error.
+        
         $this->setEnvironmentFile( $environment );
 
         if( $this->isProduction( $environment )){
 
             $this->restoreComposer = true;
 
-            // get Confrimation if user is deploying production
+            // get Confirmation if user is deploying production
             // to a Git Branch other than 'master'
             $this->confirmMasterBranch();
 
@@ -142,7 +145,7 @@ class BuildCommand extends Command {
             Composer::install();
         }
 
-        $this->restoreEnvironmentFile( );
+        $this->restoreEnvironmentFile();
 
         $this->info( "Build Completed Successfully" );
 
