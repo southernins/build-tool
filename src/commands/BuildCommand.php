@@ -4,20 +4,24 @@
 namespace SouthernIns\BuildTool\Commands;
 
 use Carbon\Carbon;
+
 use Illuminate\Console\Command;
+
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-use SouthernIns\BuildTool\Shell\Composer;
-use SouthernIns\BuildTool\Shell\Git;
+//use SouthernIns\BuildTool\Shell\Composer;
+
 use SouthernIns\BuildTool\Shell\NPM;
+use SouthernIns\BuildTool\Shell\Zip;
 
 
 class BuildCommand extends Command {
 
+    use BuildDeployment;
     /**
      * The name and signature of the console command.
      *
@@ -66,6 +70,13 @@ class BuildCommand extends Command {
         $dirArr = explode("/", $this->projectPath) ;
 
         $this->projectFolder = end( $dirArr );
+
+        if( !Config::has( 'build-tool' ) ){
+
+            $configArr = include __DIR__ . '/../config/build-tool.php';
+            Config::push( 'build-tool', $configArr );
+        }
+//        $build_config = Config::get( 'build-tool' );
 
     } //- END __construct()
 
@@ -137,7 +148,7 @@ class BuildCommand extends Command {
         if( $restoreDev === true ){
 
             // Composer install goes here
-            Composer::install();
+//            Composer::install();
 
         }
 
@@ -163,58 +174,40 @@ class BuildCommand extends Command {
 
         $this->comment( "Creating Build File" );
 
+
         $include_list = Config::get( 'build-tool.include' );
+        $config_file = Config::has( 'build-tool' );
+        $build_config = Config::get( 'build-tool' );
+//
+//        dump( $config_file );
+//        dump( $build_config );
+//
+//        dump( Config::all() );
+//
+//        dd( "stoped" );
+
+
+        $build_file = $this->projectPath . '_v-' . $version .'.zip';
+
+///$this->projectPath . '_v-' . $version .'.zip
+///
+///
 
         $include ='';
         if( count( $include_list ) > 0 ) {
             $include = '-i ' . implode( $include_list, ' ' );
         }
 
-        $command = 'zip -r -q ' . $this->projectPath . '_v-' . $version .'.zip ./ ' . $include ;
+        Zip::buildFile( $build_file, $include_list );
 
-        $createBuild = new Process( $command  );
-        $createBuild->run();
-
-        if( !$createBuild->isSuccessful() ){
-
-            if( $createBuild->getExitCode() == 127 ){
-                $this->termiateCommand( "Zip Command failed, please confirm it is installed ( sudo apt-get install zip )" );
-            }
-
-            throw new ProcessFailedException( $createBuild );
-
-        }
-
-        echo $createBuild->getOutput();
 
     } //- END function createBuildFile()
 
 
     /**
-     * Generate build version string from date.
-     *
-     * @param $environment laravel envrionment to use for build
-     * @return string  version of the current build
-     */
-    protected function buildVersion( $environment ){
-
-        $version = Carbon::now()->format('Y.m.d.Hi');
-
-        if( !$this->isProduction( $environment ) ){
-
-            // Label non production builds with the current Environment
-            $version = $version ."_" . $environment;
-
-        } //- END if( is production )
-
-        return $version;
-
-    } //- END function buildVersion()
-
-    /**
      * call laravel cache:clear artisan command
      *
-     * @param $environment laravel envrionment to use
+     * @param $environment laravel environment to use
      *
      */
     protected function clearCache( $environment ){
@@ -233,71 +226,51 @@ class BuildCommand extends Command {
     } //- END function clearCache()
 
     /**
-     * Copy selected env file from environments folder to root project env
-     * prior to build
-     *
-     * @param $environment laraven environment file to use
-     */
-    protected function setEnvironmentFile( $environment ){
-
-        $newEnv = $this->projectPath . "/environments/.env." . $environment;
-
-        // copy specified environment to .env
-        if( file_exists( $newEnv )){
-            copy( $newEnv, $this->projectPath . "/.env" );
-        }  //- END file_exists()
-
-//        // Removed php artisan optimize from Composer.json
-//        // Running this in composer ignored the current environment
-//        // set by --env
-//        // optimize is being depreciated in 5.5 and removed in 5.6...
-//        // TODO:: remove when laravel upgraded to 5.5
-//        $this->call( "optimize",[
-//            '--env' => $environment
-//        ] );
-
-    } //- END function setEnvironmentFile()
-
-    /**
-     * returns true if current envrionment is set to "production"
-     *
-     * @param $environment laravel envrionment to use during build
-     *
-     * @return bool
-     */
-    protected function isProduction( $environment ){
-
-        return ( $environment == "production" );
-
-    }
-
-    /**
      * Check if git branch is "master"
      * and get confirmation for any other branch.
      *
      */
     protected function confirmMasterBranch(){
 
-        if( Git::branchName() != "master" ){
+        if( $this->isNotBranch( 'master' )){
 
             $this->error( "Creating a Production Deployment from a Branch other than Master" );
-            if( !$this->confirm( "Are you sure this is what you would like to do?" )){
-//                $this->error( "Build Process Terminated!" );
-//                exit();
-//                return;
 
-                $this->termiateCommand();
+            if( !$this->confirm( "Are you sure this is what you would like to do?" )){
+                $this->terminateCommand();
             }
-        }
+
+        } //- END if isNotBranch 'master'
 
     } //- END function confirmMasterBranch()
 
-    protected function termiateCommand( $message = '' ) {
+    /**
+     * terminateCommand
+     * displays message and exit script
+     *
+     * @param string $message
+     */
+    protected function terminateCommand( $message = '' ) {
+
         if( $message != '' ){
             $this->error( $message );
         }
         $this->error( "Build Process Terminated!" );
         exit();
+    }
+
+    protected function testConfig(){
+        $include_list = Config::get( 'build-tool.include' );
+        $config_file = Config::has( 'build-tool' );
+        $build_config = Config::get( 'build-tool' );
+
+        dump( $config_file );
+        dump( $build_config );
+
+        dump( Config::all() );
+
+
+        throw new CommandError($this, 'stopped' );
     }
 
 } //- END class BuildCommand{}

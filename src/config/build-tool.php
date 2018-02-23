@@ -10,7 +10,7 @@ return [
     | This value is will control the name of the build fle
     */
 
-    'name' => 'build',
+    'name' => str_slug( env( 'APP_NAME', 'build' ), '_' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -35,7 +35,5 @@ return [
         'composer.json',
         'artisan',
     ],
-
-
 
 ];

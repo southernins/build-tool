@@ -20,7 +20,6 @@ class Composer {
      */
     static function install(){
 
-//        $this->comment( "Restoring Composer Dev Dependencies" );
         // Run composer install to restore Dev Dependencies
         $composerDev = new Process( 'composer install' );
         $composerDev->start();
@@ -38,8 +37,6 @@ class Composer {
      */
     static function installNoDev(){
 
-//        $this->comment( "Removing Composer Dev Dependencies" );
-
         // Run composer install --no-dev to prevent Dev Deps from pushing t production
         $composer_prod = new Process( 'composer install --no-dev --optimize-autoloader --no-interaction' );
         $composer_prod->start();
@@ -50,6 +47,5 @@ class Composer {
         }
 
     } //- END function Composer::installNoDev()
-
 
 } //- END Class Composer{}
