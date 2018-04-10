@@ -154,7 +154,7 @@ class BuildCommand extends Command {
 
     /**
      *
-     * Create the build deployment pacakge.
+     * Create the build deployment package.
      *
      * @param $version string version to use when creating build file.
      */
@@ -177,6 +177,7 @@ class BuildCommand extends Command {
         $command = 'zip -r -q ' . $build_file . ' ./ ' . $include ;
 
         $createBuild = new Process( $command  );
+        $createBuild->setTimeout( 0 );
         $createBuild->run();
 
         if( !$createBuild->isSuccessful() ){
