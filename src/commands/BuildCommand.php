@@ -101,9 +101,6 @@ class BuildCommand extends Command {
     protected function build( $environment ){
 
         $buildVersion   = $this->buildVersion( $environment );
-        $buildName      = $this->buildName();
-
-        $this->info( "Creating $buildName - $environment Build version $buildVersion" );
 
         $this->clearCache( $environment );
 
@@ -112,6 +109,14 @@ class BuildCommand extends Command {
         // Try Catch may be needed after this point to restore env.previous on error.
         
         $this->setEnvironmentFile( $environment );
+
+        /**
+         * Generate Build name AFTER envrionment gets set
+         * This prevents odd naming from what ever the .env file had in it prior
+         * call of build script
+         */
+        $buildName      = $this->buildName();
+        $this->info( "Creating $buildName - $environment Build version $buildVersion" );
 
         if( $this->isProduction( $environment )){
 
