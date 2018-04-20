@@ -43,12 +43,22 @@ class BuildDevCommand extends Command {
      * @return mixed
      */
     public function handle() {
-        //
 
-        $this->info( App::environment() );
-//        $this->call( "build", [
-//            '--env' => 'dev'
-//        ]);
+        $environment = 'dev';
+
+        $this->info( 'Setting Environment to - ' . $environment );
+
+        $this->setEnvironmentFile( $environment );
+
+        $this->overrideEBConfig( $environment );
+
+        // Call Build now that Env is set
+        $this->call( "build" );
+
+        // Restore Environment
+        $this->restoreEBConfig();
+//        $this->restoreEnvironmentFile();
+        $this->restoreEnvironmentFile();
 
     } //- END function handle()
 

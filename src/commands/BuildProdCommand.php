@@ -43,9 +43,21 @@ class BuildProdCommand extends Command {
      */
     public function handle() {
 
-        $this->call( "build", [
-            '--env' => 'production'
-        ]);
+        $environment = 'production';
+
+        $this->info( 'Setting Environment to - ' . $environment );
+
+        $this->setEnvironmentFile( $environment );
+
+        $this->overrideEBConfig( $environment );
+
+        // Call Build now that Env is set
+        $this->call( "build" );
+
+        // Restore Environment
+        $this->restoreEBConfig();
+//        $this->restoreEnvironmentFile();
+        $this->restoreEnvironmentFile();
         
     } //- END function handle()
 
