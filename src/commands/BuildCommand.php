@@ -154,7 +154,7 @@ class BuildCommand extends Command {
         }
 
         // Testing Move to Sub Commands  Build now creates a pacakge from the current env
-        $this->restoreEnvironmentFile();
+//        $this->restoreEnvironmentFile();
 
         $this->info( "Build Completed Successfully" );
 

@@ -60,11 +60,9 @@ class BuildStagingCommand extends Command {
 
         // Restore Environment
         $this->restoreEBConfig();
+//        $this->restoreEnvironmentFile();
         $this->restoreEnvironmentFile();
 
-        // Testing Move to Sub Commands  Build now creates a pacakge from the current env
-        $this->restoreEnvironmentFile();
-        
     } //- END function handle()
 
 } //- END class BuildProdCommand {}
