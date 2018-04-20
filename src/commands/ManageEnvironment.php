@@ -6,6 +6,9 @@ use SouthernIns\BuildTool\Shell\Git;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+
 trait ManageEnvironment {
 
 
