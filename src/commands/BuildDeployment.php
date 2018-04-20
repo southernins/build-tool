@@ -58,5 +58,18 @@ trait BuildDeployment {
 
     } //- END checkConfig()
 
+    /**
+     * returns true if current environment is set to "production"
+     *
+     * @param $environment laravel environment to use during build
+     *
+     * @return bool
+     */
+    protected function isProduction( $environment ){
+
+        return ( $environment == "production" );
+
+    } //- END isProduction()
+
 
 } //- END trait BuildDeployment {}

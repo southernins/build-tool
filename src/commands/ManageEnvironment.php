@@ -9,18 +9,7 @@ use Illuminate\Support\Facades\Config;
 trait ManageEnvironment {
 
 
-    /**
-     * returns true if current environment is set to "production"
-     *
-     * @param $environment laravel environment to use during build
-     *
-     * @return bool
-     */
-    protected function isProduction( $environment ){
 
-        return ( $environment == "production" );
-
-    } //- END isProduction()
 
 
     /**
@@ -60,13 +49,13 @@ trait ManageEnvironment {
      */
     protected function overrideEBConfig( $environment ){
 
-        $ebOverrides = base_path() . '/' . $environment . '.ebextensions';
+        $ebOverrides = base_path() . '/.ebextensions.' . $environment;
 
         // If ebOverrides folder exists for current environment.
         if( file_exists( $ebOverrides )) {
 
             // Copy .ebextensions folder to .ebextensions_previous
-            $cpCommand = 'cp -R .ebextensions .ebextensions_previous';
+            $cpCommand = 'cp -R .ebextensions .ebextensions.previous';
 
             $cpyFiles = new Process( $cpCommand  );
             $cpyFiles->setTimeout( 0 );
@@ -95,8 +84,7 @@ trait ManageEnvironment {
             }
 
             echo $overwriteFiles->getOutput();
-
-
+            
         } //- END if ebOverrides  exists
 
 
@@ -107,7 +95,7 @@ trait ManageEnvironment {
      */
     protected function restoreEBConfig( ){
 
-        $previousConfig = base_path() . '/.ebextensions_previous';
+        $previousConfig = base_path() . '/.ebextensions.previous';
 
         if( file_exists( $previousConfig )){
 
@@ -127,7 +115,7 @@ trait ManageEnvironment {
             echo $removeConfig->getOutput();
 
 
-            rename( base_path() . '/.ebextensions_previous', base_path() . '/.ebextensions' );
+            rename( base_path() . '/.ebextensions.previous', base_path() . '/.ebextensions' );
 
         }
 

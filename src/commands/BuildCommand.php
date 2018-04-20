@@ -22,7 +22,7 @@ use SouthernIns\BuildTool\Shell\NPM;
 class BuildCommand extends Command {
 
     use BuildDeployment;
-    use ManageEnvironment;
+//    use ManageEnvironment;
     /**
      * The name and signature of the console command.
      *
