@@ -84,7 +84,7 @@ trait ManageEnvironment {
             }
 
             echo $overwriteFiles->getOutput();
-            
+
         } //- END if ebOverrides  exists
 
 

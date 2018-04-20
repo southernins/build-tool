@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use SouthernIns\BuildTool\Commands\BuildCommand;
 use SouthernIns\BuildTool\Commands\BuildDevCommand;
 use SouthernIns\BuildTool\Commands\BuildProdCommand;
+use SouthernIns\BuildTool\Commands\BuildStagingCommand;
 
 
 class BuildServiceProvider extends ServiceProvider {
