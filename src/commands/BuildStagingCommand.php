@@ -5,6 +5,9 @@ namespace SouthernIns\BuildTool\Commands;
 
 use Illuminate\Console\Command;
 
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+
 /**
  * Class BuildProdCommand
  *
@@ -71,8 +74,6 @@ class BuildStagingCommand extends Command {
         }
 
         echo $buildProcess->getOutput();
-
-
 
         // Restore Environment
         $this->restoreEBConfig();
