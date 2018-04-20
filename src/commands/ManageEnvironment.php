@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Config;
 trait ManageEnvironment {
 
 
-
-
-
     /**
      * Copy selected env file from environments folder to root project env
      * prior to build
