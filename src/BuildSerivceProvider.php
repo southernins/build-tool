@@ -19,9 +19,12 @@ class BuildServiceProvider extends ServiceProvider {
 
         if( $this->app->runningInConsole() ){
             $this->commands([
+
                 BuildDevCommand::class,
                 BuildCommand::class,
-                BuildProdCommand::class
+                BuildProdCommand::class,
+                BuildStagingCommand::class
+
             ]);
         }
 

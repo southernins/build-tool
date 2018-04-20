@@ -10,19 +10,6 @@ trait BuildDeployment {
 
 
     /**
-     * returns true if current environment is set to "production"
-     *
-     * @param $environment laravel environment to use during build
-     *
-     * @return bool
-     */
-    protected function isProduction( $environment ){
-
-        return ( $environment == "production" );
-
-    } //- END isProduction()
-
-    /**
      * Generate build version string from date.
      *
      * @param $environment laravel envrionment to use for build
@@ -41,34 +28,17 @@ trait BuildDeployment {
 
     } //- END function buildVersion()
 
+    /**
+     * Create Build name from App Name
+     *
+     * @return mixed
+     */
     protected function buildName(){
 
         return Config::get( 'build-tool.name' );
 
     }
 
-    /**
-     * Copy selected env file from environments folder to root project env
-     * prior to build
-     *
-     * @param $environment laravel environment file to use
-     */
-    protected function setEnvironmentFile( $environment ){
-
-        rename( base_path() . '/.env', base_path() . '/.env.previous' );
-
-        $newEnv = base_path() . "/environments/.env." . $environment;
-
-        copy( $newEnv, base_path() . "/.env" );
-
-
-    } //- END function setEnvironmentFile()
-
-    protected function restoreEnvironmentFile(){
-//        $envFile = base_path() . '/.env.previous';
-
-        rename( base_path() . '/.env.previous', base_path() . '/.env' );
-    }
 
     protected function isNotBranch( $branchName ){
         return  Git::branchName() != $branchName;

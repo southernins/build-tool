@@ -22,6 +22,7 @@ use SouthernIns\BuildTool\Shell\NPM;
 class BuildCommand extends Command {
 
     use BuildDeployment;
+    use ManageEnvironment;
     /**
      * The name and signature of the console command.
      *
@@ -104,11 +105,13 @@ class BuildCommand extends Command {
 
         $this->clearCache( $environment );
 
-        $this->info( 'Setting Environment to - ' . $environment );
+        // Testing Move to Sub Commands  Build now creates a pacakge from the current env
+        //$this->info( 'Setting Environment to - ' . $environment );
 
         // Try Catch may be needed after this point to restore env.previous on error.
-        
-        $this->setEnvironmentFile( $environment );
+
+        // Testing Move to Sub Commands  Build now creates a pacakge from the current env
+//        $this->setEnvironmentFile( $environment );
 
         /**
          * Generate Build name AFTER envrionment gets set
@@ -150,6 +153,7 @@ class BuildCommand extends Command {
             Composer::install();
         }
 
+        // Testing Move to Sub Commands  Build now creates a pacakge from the current env
         $this->restoreEnvironmentFile();
 
         $this->info( "Build Completed Successfully" );
@@ -255,7 +259,5 @@ class BuildCommand extends Command {
         $this->error( "Build Process Terminated!" );
         exit();
     }
-
-
 
 } //- END class BuildCommand{}
