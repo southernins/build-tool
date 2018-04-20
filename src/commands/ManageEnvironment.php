@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Config;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
+use Dotenv;
+use InvalidArgumentException;
+
 trait ManageEnvironment {
 
 
@@ -25,6 +28,15 @@ trait ManageEnvironment {
         $newEnv = base_path() . "/environments/.env." . $environment;
 
         copy( $newEnv, base_path() . "/.env" );
+
+
+        try {
+            Dotenv::makeMutable();
+            Dotenv::load( app()->environmentPath(), app()->environmentFile() );
+            Dotenv::makeImmutable();
+        } catch (InvalidArgumentException $e) {
+            //
+        }
 
 
     } //- END function setEnvironmentFile()
