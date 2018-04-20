@@ -100,7 +100,7 @@ trait ManageEnvironment {
         if( file_exists( $previousConfig )){
 
             // Put Override Files into .ebextensions
-            $removeConfigCommand = 'rm -rf' . base_path() . '/.ebextensions' ;
+            $removeConfigCommand = 'rm -rf ' . base_path() . '/.ebextensions' ;
 
             $removeConfig = new Process( $removeConfigCommand  );
             $removeConfig->setTimeout( 0 );
