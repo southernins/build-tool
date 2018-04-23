@@ -1,4 +1,7 @@
 <?php
+/**
+ *
+ */
 
 namespace SouthernIns\BuildTool\Commands;
 
@@ -9,8 +12,6 @@ use Illuminate\Support\Facades\Config;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-//use Dotenv;
-//use InvalidArgumentException;
 
 trait ManageEnvironment {
 
@@ -20,7 +21,6 @@ trait ManageEnvironment {
      * prior to build
      *
      * @param $environment laravel environment file to use
-     * @throws \Exception  Stops build process if there is no .env file for the given $environment.
      */
     protected function setEnvironmentFile( $environment ){
 
@@ -64,7 +64,6 @@ trait ManageEnvironment {
      * deployment package is created.
      *
      * @param $environment
-     * @throws ProcessFailedException  if Command Processes do not complete successfully
      *
      */
     protected function overrideEBConfig( $environment ){

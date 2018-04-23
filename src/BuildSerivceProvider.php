@@ -1,12 +1,12 @@
 <?php
+/**
+ *
+ */
 
 namespace SouthernIns\BuildTool;
 
 use Illuminate\Support\ServiceProvider;
 use SouthernIns\BuildTool\Commands\BuildCommand;
-use SouthernIns\BuildTool\Commands\BuildDevCommand;
-use SouthernIns\BuildTool\Commands\BuildProdCommand;
-use SouthernIns\BuildTool\Commands\BuildStagingCommand;
 
 
 class BuildServiceProvider extends ServiceProvider {
@@ -20,12 +20,7 @@ class BuildServiceProvider extends ServiceProvider {
 
         if( $this->app->runningInConsole() ){
             $this->commands([
-
-                BuildDevCommand::class,
                 BuildCommand::class,
-                BuildProdCommand::class,
-                BuildStagingCommand::class
-
             ]);
         }
 

@@ -1,4 +1,7 @@
 <?php
+/**
+ *
+ */
 
 //namespace App\Console\Commands;
 namespace SouthernIns\BuildTool\Commands;
@@ -23,7 +26,7 @@ class BuildCommand extends Command {
 
     use BuildDeployment;
     use ManageEnvironment;
-//    use ManageEnvironment;
+
     /**
      * The name and signature of the console command.
      *
@@ -36,14 +39,14 @@ class BuildCommand extends Command {
      *
      * @var string
      */
-    protected $description = 'Create Production Build File for Deployment';
+    protected $description = 'Create Build File for Deployment Use --env to specify environment for Build package';
 
 
     /**
      * Environment to deploy
      * @var string
      */
-    protected $envionrment = 'dev';
+    protected $environment = 'local';
 
     /**
      *
@@ -104,8 +107,6 @@ class BuildCommand extends Command {
      * run the entire build process
      *
      * @param $environment
-     * @throws \Exception in setEnvirnomentFile() if No .env.$environment file exists
-     * @throws ProcessFailedException  if Command Processes do not complete successfully
      */
     protected function build( $environment ){
 
