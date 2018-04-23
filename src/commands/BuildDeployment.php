@@ -12,7 +12,7 @@ trait BuildDeployment {
     /**
      * Generate build version string from date.
      *
-     * @param $environment laravel envrionment to use for build
+     * @param $environment laravel environment to use for build
      * @return string  version of the current build
      */
     protected function buildVersion( $environment ){

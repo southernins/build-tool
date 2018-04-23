@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Config;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-use Dotenv;
-use InvalidArgumentException;
+//use Dotenv;
+//use InvalidArgumentException;
 
 trait ManageEnvironment {
 
@@ -20,24 +20,30 @@ trait ManageEnvironment {
      * prior to build
      *
      * @param $environment laravel environment file to use
+     * @throws \Exception  Stops build process if there is no .env file for the given $environment.
      */
     protected function setEnvironmentFile( $environment ){
 
-        rename( base_path() . '/.env', base_path() . '/.env.previous' );
+        $newEnv = base_path() . "/.env." . $environment;
 
-        $newEnv = base_path() . "/environments/.env." . $environment;
+        // rename and copy new env IF file exists.
+        if( file_exists( $newEnv )) {
 
-        copy( $newEnv, base_path() . "/.env" );
+            rename( base_path() . '/.env', base_path() . '/.env.previous' );
 
+            // Try and restore .env file if copy fails.
+            try{
+                copy( $newEnv, base_path() . "/.env" );
+            } catch( \Exception $exception ){
+                $this->restoreEnvironmentFile();
+                $this->terminateCommand( $exception->getMessage() );
+            }
 
-        try {
-            Dotenv::makeMutable();
-            Dotenv::load( app()->environmentPath(), app()->environmentFile() );
-            Dotenv::makeImmutable();
-        } catch (InvalidArgumentException $e) {
-            //
+        } else {
+            
+            // if .env.$environment does NOT exist kill command
+            $this->terminateCommand( "Environment file for " . $environment . " was not found!" );
         }
-
 
     } //- END function setEnvironmentFile()
 
@@ -58,6 +64,8 @@ trait ManageEnvironment {
      * deployment package is created.
      *
      * @param $environment
+     * @throws ProcessFailedException  if Command Processes do not complete successfully
+     *
      */
     protected function overrideEBConfig( $environment ){
 
@@ -74,9 +82,7 @@ trait ManageEnvironment {
             $cpyFiles->run();
 
             if( !$cpyFiles->isSuccessful() ){
-
                 throw new ProcessFailedException( $cpyFiles );
-
             }
 
             //Move Files from EBOverride folder into .ebextensions

@@ -22,6 +22,7 @@ use SouthernIns\BuildTool\Shell\NPM;
 class BuildCommand extends Command {
 
     use BuildDeployment;
+    use ManageEnvironment;
 //    use ManageEnvironment;
     /**
      * The name and signature of the console command.
@@ -94,31 +95,31 @@ class BuildCommand extends Command {
 
 
     /**
-     * run the entire build process
+     *
      *
      * @param $environment string laravel environment to use
      *
      */
+    /**
+     * run the entire build process
+     *
+     * @param $environment
+     * @throws \Exception in setEnvirnomentFile() if No .env.$environment file exists
+     * @throws ProcessFailedException  if Command Processes do not complete successfully
+     */
     protected function build( $environment ){
 
-        $buildVersion   = $this->buildVersion( $environment );
+        $buildVersion = $this->buildVersion( $environment );
 
         $this->clearCache( $environment );
 
-        // Testing Move to Sub Commands  Build now creates a pacakge from the current env
-        //$this->info( 'Setting Environment to - ' . $environment );
+        $this->info( 'Setting Environment to - ' . $environment );
 
-        // Try Catch may be needed after this point to restore env.previous on error.
+        $this->setEnvironmentFile( $environment );
+        $this->overrideEBConfig( $environment );
 
-        // Testing Move to Sub Commands  Build now creates a pacakge from the current env
-//        $this->setEnvironmentFile( $environment );
-
-        /**
-         * Generate Build name AFTER envrionment gets set
-         * This prevents odd naming from what ever the .env file had in it prior
-         * call of build script
-         */
-        $buildName      = $this->buildName();
+        // Generate Build name
+        $buildName = $this->buildName();
         $this->info( "Creating $buildName - $environment Build version $buildVersion" );
 
         if( $this->isProduction( $environment )){
@@ -145,7 +146,7 @@ class BuildCommand extends Command {
         // Create Build .zip Package
         $this->createBuildFile( $buildName, $buildVersion );
 
-        // short delay to ensure composer completion
+        // short delay to make sure everything is done.
         sleep( 2 );
 
         // restore Dev Dependencies if they were removed
@@ -153,8 +154,9 @@ class BuildCommand extends Command {
             Composer::install();
         }
 
-        // Testing Move to Sub Commands  Build now creates a pacakge from the current env
-//        $this->restoreEnvironmentFile();
+        // Restore Environment
+        $this->restoreEBConfig();
+        $this->restoreEnvironmentFile();
 
         $this->info( "Build Completed Successfully" );
 
@@ -162,9 +164,9 @@ class BuildCommand extends Command {
 
 
     /**
-     *
      * Create the build deployment package.
      *
+     * @param $build Build Name
      * @param $version string version to use when creating build file.
      */
     protected function createBuildFile( $build, $version ){
@@ -180,9 +182,7 @@ class BuildCommand extends Command {
 
         $build_file =  base_path() . '/../' . $build . '_v-' . $version .'.zip';
 
-//        Zip::buildFile( $build_file, $include_list );
-
-
+        // Command ran manually here, a Zip class will not be found after Composer uninstall.
         $command = 'zip -r -q ' . $build_file . ' ./ ' . $include ;
 
         $createBuild = new Process( $command  );
@@ -223,6 +223,8 @@ class BuildCommand extends Command {
         $this->call( "cache:clear", [
             '--env' => $environment
         ]);
+
+
 
     } //- END function clearCache()
 

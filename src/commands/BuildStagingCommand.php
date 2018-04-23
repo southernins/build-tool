@@ -59,25 +59,10 @@ class BuildStagingCommand extends Command {
         $this->overrideEBConfig( $environment );
 
         // Call Build now that Env is set
-//        $this->call( "build" );
-
-        $buildCommand = 'php artisan build' ;
-
-        $buildProcess = new Process( $buildCommand  );
-        $buildProcess->setTimeout( 0 );
-        $buildProcess->run();
-
-        if( !$buildProcess->isSuccessful() ){
-
-            throw new ProcessFailedException( $buildProcess );
-
-        }
-
-        echo $buildProcess->getOutput();
+        $this->call( "build" );
 
         // Restore Environment
         $this->restoreEBConfig();
-//        $this->restoreEnvironmentFile();
         $this->restoreEnvironmentFile();
 
     } //- END function handle()
