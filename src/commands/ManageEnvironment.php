@@ -40,7 +40,7 @@ trait ManageEnvironment {
             }
 
         } else {
-            
+
             // if .env.$environment does NOT exist kill command
             $this->terminateCommand( "Environment file for " . $environment . " was not found!" );
         }
@@ -74,10 +74,16 @@ trait ManageEnvironment {
         // If ebOverrides folder exists for current environment.
         if( file_exists( $ebOverrides )) {
 
-            // Copy .ebextensions folder to .ebextensions_previous
-            $cpCommand = 'cp -R .ebextensions .ebextensions.previous';
+            // Base Elasticbeanstalk Extensions Directory
+            $ebExtensions   = base_path() . '/.ebextensions';
 
-            $cpyFiles = new Process( $cpCommand  );
+            // Temp Directory to store current Configuration during build process
+            $prevExtensions = base_path() . '/.ebextensions.previous';
+
+            // Copy .ebextensions folder to .ebextensions_previous
+            $cpCommand = 'cp -R ' . $ebExtensions . ' ' . $prevExtensions;
+
+            $cpyFiles = new Process( $cpCommand );
             $cpyFiles->setTimeout( 0 );
             $cpyFiles->run();
 
@@ -88,8 +94,8 @@ trait ManageEnvironment {
             //Move Files from EBOverride folder into .ebextensions
             echo $cpyFiles->getOutput();
 
-            // Put Override Files into .ebextensions
-            $overrideCommand = 'yes | cp -Rf ' . $ebOverrides . '/. .ebextensions/' ;
+            // Put Override Files into .ebextensions overwriting any existing files.
+            $overrideCommand = 'yes | cp -Rf ' . $ebOverrides . '/. ' . $ebExtensions . '/' ;
 
             $overwriteFiles = new Process( $overrideCommand  );
             $overwriteFiles->setTimeout( 0 );

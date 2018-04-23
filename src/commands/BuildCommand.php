@@ -220,11 +220,25 @@ class BuildCommand extends Command {
 //        ] );
         $this->comment( "Clearing App Cache" );
 
+        // Flush Application Cache
         $this->call( "cache:clear", [
             '--env' => $environment
         ]);
 
+        // Remove Cached Views
+        $this->call( "view:clear", [
+            '--env' => $environment
+        ]);
 
+        // Remove Config Cache File
+        $this->call( "config:clear", [
+            '--env' => $environment
+        ]);
+
+//        // Remove Route Cache file
+//        $this->call( "route:clear", [
+//            '--env' => $environment
+//        ]);
 
     } //- END function clearCache()
 
