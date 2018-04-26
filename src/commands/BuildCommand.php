@@ -117,49 +117,59 @@ class BuildCommand extends Command {
         $this->info( 'Setting Environment to - ' . $environment );
 
         $this->setEnvironmentFile( $environment );
-        $this->overrideEBConfig( $environment );
 
-        // Generate Build name
-        $buildName = $this->buildName();
-        $this->info( "Creating $buildName - $environment Build version $buildVersion" );
+        try{
 
-        if( $this->isProduction( $environment )){
+            $this->overrideEBConfig( $environment );
 
-            $this->restoreComposer = true;
+            // Generate Build name
+            $buildName = $this->buildName();
+            $this->info( "Creating $buildName - $environment Build version $buildVersion" );
 
-            // get Confirmation if user is deploying production
-            // to a Git Branch other than 'master'
-            $this->confirmMasterBranch();
+            if( $this->isProduction( $environment )){
 
-            $this->comment( "Running NPM Production Script" );
-            NPM::runProduction();
+                $this->restoreComposer = true;
 
-            $this->comment( "Removing Composer Dev Dependencies" );
-            Composer::installNoDev();
+                // get Confirmation if user is deploying production
+                // to a Git Branch other than 'master'
+                $this->confirmMasterBranch();
 
-        } else {
+                $this->comment( "Running NPM Production Script" );
+                NPM::runProduction();
 
-            $this->comment( "Running NPM Dev Script" );
-            NPM::runDev();
+                $this->comment( "Removing Composer Dev Dependencies" );
+                Composer::installNoDev();
 
-        } // END if production
+            } else {
 
-        // Create Build .zip Package
-        $this->createBuildFile( $buildName, $buildVersion );
+                $this->comment( "Running NPM Dev Script" );
+                NPM::runDev();
 
-        // short delay to make sure everything is done.
-        sleep( 2 );
+            } // END if production
 
-        // restore Dev Dependencies if they were removed
-        if( $this->restoreComposer === true ){
-            Composer::install();
+            // Create Build .zip Package
+            $this->createBuildFile( $buildName, $buildVersion );
+
+            // short delay to make sure everything is done.
+            sleep( 2 );
+
+            // restore Dev Dependencies if they were removed
+            if( $this->restoreComposer === true ){
+                Composer::install();
+            }
+
+            // Restore Environment
+            $this->restoreEBConfig();
+            $this->restoreEnvironmentFile();
+
+            $this->info( "Build Completed Successfully" );
+
+        }catch( \Exception $exception ){
+
+            $this->restoreEnvironmentFile();
+            $this->terminateCommand( $exception->getMessage() );
+
         }
-
-        // Restore Environment
-        $this->restoreEBConfig();
-        $this->restoreEnvironmentFile();
-
-        $this->info( "Build Completed Successfully" );
 
     } //- END function build()
 
