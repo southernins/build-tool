@@ -35,7 +35,7 @@ class Git {
         }
 
         // return Current Git Branch Name from command output
-        return $gitBranch->getOutput();
+        return trim( $gitBranch->getOutput() );
 
     } //- END function branchName()
 
