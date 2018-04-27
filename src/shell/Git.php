@@ -18,7 +18,7 @@ class Git {
 
 
     /**
-     * function to get the Curent Branch Name
+     * function to get the Current Branch Name
      *
      * @return string
      */
