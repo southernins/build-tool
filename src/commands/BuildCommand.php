@@ -202,10 +202,10 @@ class BuildCommand extends Command {
 
 
         foreach( $createBuild as $type => $data ){
-            if( $createBuild::OUT === $type ) {
-                echo "\n-> ".$data;
+            if( $createBuild::ERR === $type ) {
+                echo "\n=>".$data;
             } else { // $process::ERR === $type
-                echo "\n=> ".$data;
+                echo "\n".$data;
             }
         }
 
@@ -240,19 +240,20 @@ class BuildCommand extends Command {
 //        ] );
         $this->comment( "Clearing App Cache" );
 
-        // Flush Application Cache
+        // Flush Application Cache for local environment
+        // before creating $environment build
         $this->call( "cache:clear", [
-            '--env' => $environment
+            '--env' => "local"
         ]);
 
         // Remove Cached Views
         $this->call( "view:clear", [
-            '--env' => $environment
+            '--env' => "local"
         ]);
 
         // Remove Config Cache File
         $this->call( "config:clear", [
-            '--env' => $environment
+            '--env' => "local"
         ]);
 
 //        // Remove Route Cache file

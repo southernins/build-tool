@@ -35,10 +35,10 @@ class NPM {
 
 
         foreach ($npmProduction as $type => $data) {
-            if ($npmProduction::OUT === $type) {
-                echo "\n-> ".$data;
-            } else { // $process::ERR === $type
-                echo "\n=> ".$data;
+            if ($npmProduction::ERR === $type) {
+                echo "\n=>".$data;
+            } else { // $process::OUT === $type
+                echo "\n".$data;
             }
         }
 
@@ -60,10 +60,10 @@ class NPM {
         $npmDev->start();
 
         foreach ($npmDev as $type => $data) {
-            if ($npmDev::OUT === $type) {
-                echo "\n-> ".$data;
+            if ($npmDev::ERR === $type) {
+                echo "\n=>".$data;
             } else { // $process::ERR === $type
-                echo "\n=> ".$data;
+                echo "\n".$data;
             }
         }
 
@@ -82,10 +82,10 @@ class NPM {
             $linuxSetup->start();
 
             foreach ($linuxSetup as $type => $data) {
-                if ($linuxSetup::OUT === $type) {
-                    echo "\n-> ".$data;
-                } else { // $process::ERR === $type
+                if ($linuxSetup::ERR === $type) {
                     echo "\n=> ".$data;
+                } else { // $process::OUT === $type
+                    echo "\n".$data;
                 }
             }
 
