@@ -24,6 +24,7 @@ class Composer {
 
         // Run composer install to restore Dev Dependencies
         $composerDev = new Process( 'composer install' );
+        $composerDev->setTimeout(180);
         $composerDev->start();
 
         $iterator = $composerDev->getIterator( $composerDev::ITER_SKIP_ERR | $composerDev::ITER_KEEP_OUTPUT ) ;
@@ -41,6 +42,7 @@ class Composer {
 
         // Run composer install --no-dev to prevent Dev Deps from pushing t production
         $composer_prod = new Process( 'composer install --no-dev --optimize-autoloader --no-interaction' );
+        $composer_prod->setTimeout(180);
         $composer_prod->start();
 
         $iterator = $composer_prod->getIterator( $composer_prod::ITER_SKIP_ERR | $composer_prod::ITER_KEEP_OUTPUT );
