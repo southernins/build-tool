@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Cache;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -20,10 +21,10 @@ use SouthernIns\BuildTool\Shell\Composer;
 
 use SouthernIns\BuildTool\Shell\NPM;
 //use SouthernIns\BuildTool\Shell\Zip;
-
-use \Illuminate\Cache\FileStore;
-
-use \Illuminate\Filesystem\Filesystem;
+//
+//use \Illuminate\Cache\FileStore;
+//
+//use \Illuminate\Filesystem\Filesystem;
 
 
 
@@ -253,10 +254,12 @@ class BuildCommand extends Command {
 //        $this->call( "cache:clear", [
 //            '--env' => "local"
 //        ]);
-        $localCachePath = storage_path('framework/cache/data');
-        $fileClass = new Filesystem();
-        $localCache = $this->repository(new FileStore( $fileClass, $localCachePath ));
-        $localCache->flush();
+//        $localCachePath = storage_path('framework/cache/data');
+//        $fileClass = new Filesystem();
+//        $localCache = $this->repository(new FileStore( $fileClass, $localCachePath ));
+//        $localCache->flush();
+
+        Cache::store( 'file' )->flush();
 
         // TODO:: Clear All of Storage from local environment before deploying
 
