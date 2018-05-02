@@ -21,6 +21,9 @@ use SouthernIns\BuildTool\Shell\Composer;
 use SouthernIns\BuildTool\Shell\NPM;
 //use SouthernIns\BuildTool\Shell\Zip;
 
+use \Illuminate\Cache\FileStore;
+
+
 
 class BuildCommand extends Command {
 
@@ -162,10 +165,13 @@ class BuildCommand extends Command {
             $this->restoreEBConfig();
             $this->restoreEnvironmentFile();
 
+            $this->call( "config:clear" );
+
             $this->info( "Build Completed Successfully" );
 
         }catch( \Exception $exception ){
 
+            $this->call( "config:clear" );
             $this->restoreEnvironmentFile();
             $this->terminateCommand( $exception->getMessage() );
 
@@ -238,28 +244,37 @@ class BuildCommand extends Command {
 //        $this->call( "config:cache", [
 //        '--env' => $environment
 //        ] );
-        $this->comment( "Clearing App Cache" );
+        $this->comment( "Clearing Local Caches" );
 
         // Flush Application Cache for local environment
         // before creating $environment build
-        $this->call( "cache:clear", [
-            '--env' => "local"
-        ]);
+//        $this->call( "cache:clear", [
+//            '--env' => "local"
+//        ]);
+        $localCachePath = storage_path('framework/cache/data');
+        $fileClass = \Illuminate\Filesystem\Filesystem::class;
+        $localCache = $this->repository(new FileStore( $fileClass, $localCachePath ));
+        $localCache->flush();
+
+        // TODO:: Clear All of Storage from local environment before deploying
 
         // Remove Cached Views
-        $this->call( "view:clear", [
-            '--env' => "local"
-        ]);
+        $this->call( "view:clear" );
 
         // Remove Config Cache File
-        $this->call( "config:clear", [
-            '--env' => "local"
-        ]);
+//        $this->call( "config:clear" );
 
-//        // Remove Route Cache file
-//        $this->call( "route:clear", [
-//            '--env' => $environment
-//        ]);
+        // Calling Build with --env="" will overwrite the
+        // cache with the config of the environment being deployed..
+        $this->call( "config:cache" );
+
+        $this->comment( "Route Caching - Disabled" );
+//      // Remove Route Cache file
+        // Route Caching fails due to Closures in Routes
+        // PHP Cannot serialize routes with closures.
+//      $this->call( "route:clear", [
+//          '--env' => $environment
+//      ]);
 
     } //- END function clearCache()
 
