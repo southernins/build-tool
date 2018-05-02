@@ -124,6 +124,8 @@ class BuildCommand extends Command {
 
         $this->setEnvironmentFile( $environment );
 
+        $buildFileList = Config::get( 'build-tool.include' );
+
         try{
 
             $this->overrideEBConfig( $environment );
@@ -154,7 +156,7 @@ class BuildCommand extends Command {
             } // END if production
 
             // Create Build .zip Package
-            $this->createBuildFile( $buildName, $buildVersion );
+            $this->createBuildFile( $buildName, $buildVersion, $buildFileList );
 
             // short delay to make sure everything is done.
             sleep( 2 );
@@ -189,11 +191,11 @@ class BuildCommand extends Command {
      * @param $build Build Name
      * @param $version string version to use when creating build file.
      */
-    protected function createBuildFile( $build, $version ){
+    protected function createBuildFile( $build, $version,  $include_list ){
 
         $this->comment( "Creating Build File" );
 
-        $include_list = Config::get( 'build-tool.include' );
+//        $include_list = Config::get( 'build-tool.include' );
 
         $include = '';
         if( count( $include_list ) > 0 ) {
