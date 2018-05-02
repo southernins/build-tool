@@ -23,6 +23,8 @@ use SouthernIns\BuildTool\Shell\NPM;
 
 use \Illuminate\Cache\FileStore;
 
+use \Illuminate\Filesystem\Filesystem;
+
 
 
 class BuildCommand extends Command {
@@ -252,7 +254,7 @@ class BuildCommand extends Command {
 //            '--env' => "local"
 //        ]);
         $localCachePath = storage_path('framework/cache/data');
-        $fileClass = \Illuminate\Filesystem\Filesystem::class;
+        $fileClass = new Filesystem();
         $localCache = $this->repository(new FileStore( $fileClass, $localCachePath ));
         $localCache->flush();
 
