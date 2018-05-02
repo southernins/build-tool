@@ -118,13 +118,15 @@ class BuildCommand extends Command {
 
         $buildVersion = $this->buildVersion( $environment );
 
+        // Get list of files to include in build package
+        // HAS to be done before cache is cleared.
+        $buildFileList = Config::get( 'build-tool.include' );
+
         $this->clearCache( $environment );
 
         $this->info( 'Setting Environment to - ' . $environment );
 
         $this->setEnvironmentFile( $environment );
-
-        $buildFileList = Config::get( 'build-tool.include' );
 
         try{
 
