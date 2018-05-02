@@ -172,13 +172,13 @@ class BuildCommand extends Command {
             $this->restoreEBConfig();
             $this->restoreEnvironmentFile();
 
-            $this->call( "config:clear" );
+//            $this->call( "config:clear" );
 
             $this->info( "Build Completed Successfully" );
 
         }catch( \Exception $exception ){
 
-            $this->call( "config:clear" );
+//            $this->call( "config:clear" );
             $this->restoreEnvironmentFile();
             $this->terminateCommand( $exception->getMessage() );
 
@@ -271,11 +271,12 @@ class BuildCommand extends Command {
         $this->call( "view:clear" );
 
         // Remove Config Cache File
-//        $this->call( "config:clear" );
+        $this->call( "config:clear" );
 
         // Calling Build with --env="" will overwrite the
         // cache with the config of the environment being deployed..
-        $this->call( "config:cache" );
+        // CANNOT CACHE Config in local env before deployment
+//        $this->call( "config:cache" );
 
         $this->info( "Route Caching - Disabled" );
 //      // Remove Route Cache file
