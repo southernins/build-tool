@@ -273,7 +273,7 @@ class BuildCommand extends Command {
         // cache with the config of the environment being deployed..
         $this->call( "config:cache" );
 
-        $this->comment( "Route Caching - Disabled" );
+        $this->info( "Route Caching - Disabled" );
 //      // Remove Route Cache file
         // Route Caching fails due to Closures in Routes
         // PHP Cannot serialize routes with closures.

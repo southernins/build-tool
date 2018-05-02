@@ -10,7 +10,7 @@ return [
     | This value is will control the name of the build fle
     */
 
-    'name' => str_slug( env( 'APP_NAME', 'build' ), '_' ),
+    'name' => "",
 
 
     // Add BuildFile Output Directory as Config item
