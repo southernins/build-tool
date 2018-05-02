@@ -41,7 +41,7 @@ trait BuildDeployment {
         $customName = Config::get( 'build-tool.name' );
 
 //        $buildName = env( 'APP_NAME', 'build' );
-        $appName = Config::get( 'app.name' ) || "build" ;
+        $appName = Config::get( 'app.name' ) ?? "build" ;
 
         $buildName = ( !empty( $customName ) ) ? $customName : $appName;
 
