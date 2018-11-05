@@ -64,7 +64,7 @@ class NPM {
         foreach ($npmDev as $type => $data) {
             if ($npmDev::ERR === $type) {
                 echo "\n=>".$data;
-            } else { // $process::ERR === $type
+            } else { // $process::OUT === $type
                 echo "\n".$data;
             }
         }
