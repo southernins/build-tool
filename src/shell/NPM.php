@@ -80,16 +80,20 @@ class NPM {
 
         if( !file_exists( base_path() . '/node_modules/optipng-bin/vendor/optipng' ) ){
 
-            $linuxSetup = new Process( "node " . base_path() . "/node_modules/optipng-bin/lib/install.js" );
-            $linuxSetup->setTimeout(180);
-            $linuxSetup->start();
+            if( realpath( base_path() . '/node_modules/optipng-bin/vendor' )){
 
-            foreach ($linuxSetup as $type => $data) {
-                if ($linuxSetup::ERR === $type) {
-                    echo "\n=> ".$data;
-                } else { // $process::OUT === $type
-                    echo "\n".$data;
+                $linuxSetup = new Process( "node " . base_path() . "/node_modules/optipng-bin/lib/install.js" );
+                $linuxSetup->setTimeout( 180 );
+                $linuxSetup->start();
+
+                foreach( $linuxSetup as $type => $data ){
+                    if( $linuxSetup::ERR === $type ){
+                        echo "\n=> " . $data;
+                    }else{ // $process::OUT === $type
+                        echo "\n" . $data;
+                    }
                 }
+
             }
 
         }
