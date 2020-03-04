@@ -8,6 +8,7 @@ namespace SouthernIns\BuildTool\Commands;
 use SouthernIns\BuildTool\Shell\Git;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 
 trait BuildDeployment {
 
@@ -45,7 +46,7 @@ trait BuildDeployment {
 
         $buildName = ( !empty( $customName ) ) ? $customName : $appName;
 
-        return  str_slug( $buildName , '_' );
+        return  Str::slug( $buildName , '_' );
 
     }
 
