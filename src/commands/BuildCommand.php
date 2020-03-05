@@ -228,19 +228,6 @@ class BuildCommand extends Command{
             }
         }
 
-        //        if( !$createBuild->isSuccessful() ){
-        //
-        ////            $this->handleCommandError();
-        //            if( $createBuild->getExitCode() == 127 ){
-        ////                $this->terminateCommand( "Zip Command failed, please confirm it is installed ( sudo apt-get install zip )" );
-        //            }
-        //
-        //            throw new ProcessFailedException( $createBuild );
-        //
-        //        }
-        //
-        //        echo $createBuild->getOutput();
-
     } //- END function createBuildFile()
 
 

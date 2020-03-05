@@ -44,7 +44,6 @@ trait BuildDeployment{
 
         $customName = Config::get( 'build-tool.name' );
 
-        //        $buildName = env( 'APP_NAME', 'build' );
         $appName = Config::get( 'app.name' ) ?? "build";
 
         $buildName = ( !empty( $customName ) ) ? $customName : $appName;
@@ -57,16 +56,17 @@ trait BuildDeployment{
     protected function isNotBranch( $branchName ){
 
         return Git::branchName() != $branchName;
+
     }
 
 
     /**
      * Check for App config values, sets default if not found
+     * If no config file was found use defaults
      *
      */
     protected function checkConfig(){
 
-        // If no config file was found use defaults
         if( !Config::has( 'build-tool' ) ){
             $configArr = include __DIR__ . '/../config/build-tool.php';
             Config::set( 'build-tool', $configArr );
