@@ -13,6 +13,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -20,6 +21,8 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use SouthernIns\BuildTool\Shell\Composer;
 
 use SouthernIns\BuildTool\Shell\NPM;
+
+
 //use SouthernIns\BuildTool\Shell\Zip;
 //
 //use \Illuminate\Cache\FileStore;
@@ -27,8 +30,7 @@ use SouthernIns\BuildTool\Shell\NPM;
 //use \Illuminate\Filesystem\Filesystem;
 
 
-
-class BuildCommand extends Command {
+class BuildCommand extends Command{
 
     use BuildDeployment;
     use ManageEnvironment;
@@ -50,6 +52,7 @@ class BuildCommand extends Command {
 
     /**
      * Environment to deploy
+     *
      * @var string
      */
     protected $environment = 'local';
@@ -62,7 +65,7 @@ class BuildCommand extends Command {
 
     protected $projectFolder = '';
 
-    protected $restoreComposer = false;
+    protected $restoreComposer = FALSE;
 
 
     /**
@@ -70,19 +73,19 @@ class BuildCommand extends Command {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct(){
 
         parent::__construct();
 
-        // Set build envrionment from app envrionment
+        // Set build environment from app envrionment
         // Set with --env on artisan command
         $this->environment = App::environment();
 
         // Set folderName and Path for project
         $this->projectPath = base_path();
-        $dirArr = explode("/", $this->projectPath) ;
+//        $dirArr            = ;
 
-        $this->projectFolder = end( $dirArr );
+        $this->projectFolder = end( explode( "/", $this->projectPath ) );
 
         $this->checkConfig();
 
@@ -93,7 +96,7 @@ class BuildCommand extends Command {
      * Execute the console command.
      *
      */
-    public function handle() {
+    public function handle(){
 
         $this->info( $this->environment );
 
@@ -127,17 +130,21 @@ class BuildCommand extends Command {
 
         $this->setEnvironmentFile( $environment );
 
+        $this->composerCheck();
+        $this->npmCheck();
+
         try{
 
             $this->overrideEBConfig( $environment );
 
             // Generate Build name
             $buildName = $this->buildName();
+
             $this->info( "Creating $buildName - $environment Build version $buildVersion" );
 
-            if( $this->isProduction( $environment )){
+            if( $this->isProduction( $environment ) ){
 
-                $this->restoreComposer = true;
+                $this->restoreComposer = TRUE;
 
                 // get Confirmation if user is deploying production
                 // to a Git Branch other than 'master'
@@ -149,7 +156,7 @@ class BuildCommand extends Command {
                 $this->comment( "Removing Composer Dev Dependencies" );
                 Composer::installNoDev();
 
-            } else {
+            }else{
 
                 $this->comment( "Running NPM Dev Script" );
                 NPM::runDev();
@@ -163,7 +170,7 @@ class BuildCommand extends Command {
             sleep( 2 );
 
             // restore Dev Dependencies if they were removed
-            if( $this->restoreComposer === true ){
+            if( $this->restoreComposer === TRUE ){
                 Composer::install();
             }
 
@@ -171,13 +178,13 @@ class BuildCommand extends Command {
             $this->restoreEBConfig();
             $this->restoreEnvironmentFile();
 
-//            $this->call( "config:clear" );
+            //            $this->call( "config:clear" );
 
             $this->info( "Build Completed Successfully" );
 
         }catch( \Exception $exception ){
 
-//            $this->call( "config:clear" );
+            //            $this->call( "config:clear" );
             $this->restoreEnvironmentFile();
             $this->terminateCommand( $exception->getMessage() );
 
@@ -189,50 +196,50 @@ class BuildCommand extends Command {
     /**
      * Create the build deployment package.
      *
-     * @param $build Build Name
+     * @param $build   Build Name
      * @param $version string version to use when creating build file.
      */
-    protected function createBuildFile( $build, $version,  $include_list ){
+    protected function createBuildFile( $build, $version, $include_list ){
 
         $this->comment( "Creating Build File" );
 
-//        $include_list = Config::get( 'build-tool.include' );
+        //        $include_list = Config::get( 'build-tool.include' );
 
         $include = '';
-        if( count( $include_list ) > 0 ) {
+        if( count( $include_list ) > 0 ){
             $include = '-i ' . implode( $include_list, ' ' );
         }
 
-        $build_file =  base_path() . '/../' . $build . '_v-' . $version .'.zip';
+        $build_file = base_path() . '/../' . $build . '_v-' . $version . '.zip';
 
         // Command ran manually here, a Zip class will not be found after Composer uninstall.
-        $command = 'zip -r -q ' . $build_file . ' ./ ' . $include ;
+        $command = 'zip -r -q ' . $build_file . ' ./ ' . $include;
 
-        $createBuild = new Process( $command  );
+        $createBuild = new Process( $command );
         $createBuild->setTimeout( 0 );
         $createBuild->run();
 
 
         foreach( $createBuild as $type => $data ){
-            if( $createBuild::ERR === $type ) {
-                echo "\n=>".$data;
-            } else { // $process::ERR === $type
-                echo "\n".$data;
+            if( $createBuild::ERR === $type ){
+                echo "\n=>" . $data;
+            }else{ // $process::ERR === $type
+                echo "\n" . $data;
             }
         }
 
-//        if( !$createBuild->isSuccessful() ){
-//
-////            $this->handleCommandError();
-//            if( $createBuild->getExitCode() == 127 ){
-////                $this->terminateCommand( "Zip Command failed, please confirm it is installed ( sudo apt-get install zip )" );
-//            }
-//
-//            throw new ProcessFailedException( $createBuild );
-//
-//        }
-//
-//        echo $createBuild->getOutput();
+        //        if( !$createBuild->isSuccessful() ){
+        //
+        ////            $this->handleCommandError();
+        //            if( $createBuild->getExitCode() == 127 ){
+        ////                $this->terminateCommand( "Zip Command failed, please confirm it is installed ( sudo apt-get install zip )" );
+        //            }
+        //
+        //            throw new ProcessFailedException( $createBuild );
+        //
+        //        }
+        //
+        //        echo $createBuild->getOutput();
 
     } //- END function createBuildFile()
 
@@ -247,20 +254,20 @@ class BuildCommand extends Command {
 
         // TEST this... it may be a  way to push
         // cached configs to server.
-//        $this->call( "config:cache", [
-//        '--env' => $environment
-//        ] );
+        //        $this->call( "config:cache", [
+        //        '--env' => $environment
+        //        ] );
         $this->comment( "Clearing Local Caches" );
 
         // Flush Application Cache for local environment
         // before creating $environment build
-//        $this->call( "cache:clear", [
-//            '--env' => "local"
-//        ]);
-//        $localCachePath = storage_path('framework/cache/data');
-//        $fileClass = new Filesystem();
-//        $localCache = $this->repository(new FileStore( $fileClass, $localCachePath ));
-//        $localCache->flush();
+        //        $this->call( "cache:clear", [
+        //            '--env' => "local"
+        //        ]);
+        //        $localCachePath = storage_path('framework/cache/data');
+        //        $fileClass = new Filesystem();
+        //        $localCache = $this->repository(new FileStore( $fileClass, $localCachePath ));
+        //        $localCache->flush();
 
         Cache::store( 'file' )->flush();
 
@@ -275,17 +282,18 @@ class BuildCommand extends Command {
         // Calling Build with --env="" will overwrite the
         // cache with the config of the environment being deployed..
         // CANNOT CACHE Config in local env before deployment
-//        $this->call( "config:cache" );
+        //        $this->call( "config:cache" );
 
         $this->info( "Route Caching - Disabled" );
-//      // Remove Route Cache file
+        //      // Remove Route Cache file
         // Route Caching fails due to Closures in Routes
         // PHP Cannot serialize routes with closures.
-//      $this->call( "route:clear", [
-//          '--env' => $environment
-//      ]);
+        //      $this->call( "route:clear", [
+        //          '--env' => $environment
+        //      ]);
 
     } //- END function clearCache()
+
 
     /**
      * Check if git branch is "master"
@@ -294,11 +302,11 @@ class BuildCommand extends Command {
      */
     protected function confirmMasterBranch(){
 
-        if( $this->isNotBranch( 'master' )){
+        if( $this->isNotBranch( 'master' ) ){
 
             $this->error( "Creating a Production Deployment from a Branch other than Master" );
 
-            if( !$this->confirm( "Are you sure this is what you would like to do?" )){
+            if( !$this->confirm( "Are you sure this is what you would like to do?" ) ){
                 $this->terminateCommand();
             }
 
@@ -306,13 +314,14 @@ class BuildCommand extends Command {
 
     } //- END function confirmMasterBranch()
 
+
     /**
      * terminateCommand
      * displays message and exit script
      *
      * @param string $message
      */
-    protected function terminateCommand( $message = '' ) {
+    protected function terminateCommand( $message = '' ){
 
         if( $message != '' ){
             $this->error( $message );
@@ -320,5 +329,23 @@ class BuildCommand extends Command {
         $this->error( "Build Process Terminated!" );
         exit();
     }
+
+
+    protected function composerCheck(){
+
+        if( Composer::checkInstall() === FALSE ){
+            $this->terminateCommand( "vendor Folder not found. Run composer install" );
+        }
+    }
+
+
+    protected function npmCheck(){
+
+        if( NPM::checkInstall() === FALSE ){
+            $this->terminateCommand( "node_modules Folder not found. Run npm install" );
+        }
+
+    }
+
 
 } //- END class BuildCommand{}

@@ -8,6 +8,7 @@
 
 namespace SouthernIns\BuildTool\Shell;
 
+use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -99,6 +100,11 @@ class NPM {
         }
 
     } //- END function linuxSetup()
+
+
+    static function checkInstall(){
+        return File::exists( base_path() . '/node_modules');
+    }
 
 
 } //- END Class NPM{}

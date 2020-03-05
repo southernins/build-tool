@@ -52,4 +52,8 @@ class Composer {
 
     } //- END function Composer::installNoDev()
 
+    static function checkInstall(){
+        return File::exists( base_path() . '/vendor');
+    }
+
 } //- END Class Composer{}
