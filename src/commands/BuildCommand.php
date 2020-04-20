@@ -83,9 +83,9 @@ class BuildCommand extends Command{
 
         // Set folderName and Path for project
         $this->projectPath = base_path();
-//        $dirArr            = ;
 
-        $this->projectFolder = end( explode( "/", $this->projectPath ) );
+        $dirArr = explode( "/", $this->projectPath );
+        $this->projectFolder = end(  $dirArr );
 
         $this->checkConfig();
 
