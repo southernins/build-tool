@@ -8,8 +8,8 @@
 
 namespace SouthernIns\BuildTool\Shell;
 
+use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
 
 class Composer {
