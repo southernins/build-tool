@@ -6,7 +6,7 @@
  * Time: 11:17 AM
  */
 
-namespace SouthernIns\BuildTool\commands;
+namespace SouthernIns\BuildTool\Commands;
 
 
 //use Throwable;
