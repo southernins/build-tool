@@ -289,28 +289,34 @@ class BuildCommand extends Command{
      */
     protected function confirmMasterBranch(){
 
+        $confirmed = false;
+        $failed = false;
+
         try{
 
-            if( $this->isNotBranch( 'master' ) ){
+            $confirmed = $this->isNotBranch( 'master' );
 
+        } catch( ProcessFailedException $exception){ // Catches error in underlying Git call
+
+            $failed = true;
+
+        }
+
+        if( $confirmed === false || $failed === false ){
+
+            if( $failed === true ){
+                $this->error( "Git command failed Production Master branch could not be confirmed. Practice Caution!" );
+            }else{
                 $this->error( "Creating a Production Deployment from a Branch other than Master" );
-
-                if( !$this->confirm( "Are you sure this is what you would like to do?" ) ){
-                    $this->terminateCommand();
-                }
-
-            } //- END if isNotBranch 'master'
-
-        } catch( ProcessFailedException $exception){
-            // Catches error in underlying Git call
-
-            $this->error( "Git command failed Production Master branch could not be confirmed. Practice Caution!" );
+            }
 
             if( !$this->confirm( "Are you sure this is what you would like to do?" ) ){
                 $this->terminateCommand();
             }
-            return false;
-        }
+
+        } // Error conformation
+
+        return $confirmed;
 
     } //- END function confirmMasterBranch()
 
