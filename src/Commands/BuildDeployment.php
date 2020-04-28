@@ -55,11 +55,7 @@ trait BuildDeployment{
 
     protected function isNotBranch( $branchName ){
 
-        try{
-            return Git::branchName() != $branchName;
-        } catch( ProcessFailedException $exception){
-            return false;
-        }
+        return Git::branchName() != $branchName;
 
     }
 
