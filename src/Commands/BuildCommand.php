@@ -305,7 +305,8 @@ class BuildCommand extends Command{
         if( $confirmed === false || $failed === false ){
 
             if( $failed === true ){
-                $this->error( "Git command failed Production Master branch could not be confirmed. Practice Caution!" );
+                $this->error( "Git command failed while creating production Deployment." );
+                $this->error( "Master branch could not be confirmed. Practice Caution!" );
             }else{
                 $this->error( "Creating a Production Deployment from a Branch other than Master" );
             }

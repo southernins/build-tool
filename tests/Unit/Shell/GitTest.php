@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use SouthernIns\BuildTool\Shell\Git;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -18,7 +18,7 @@ class GitTest extends TestCase
      */
     public function testGitBranch()
     {
-        SELF::setBranchMaster();
+//        SELF::setBranchMaster();
 
         $isBranchMaster = Git::branchName() == 'master';
 
@@ -34,7 +34,6 @@ class GitTest extends TestCase
         if( !$gitBranch->isSuccessful() ){
             throw new ProcessFailedException( $gitBranch );
         }
-
 
         return $gitBranch->isSuccessful();
 
