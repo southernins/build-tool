@@ -26,19 +26,20 @@ return [
     | package... Anything NOT in the following list will be ignored.
     */
     'include' => [
-        'app/\*',
-        'bootstrap/\*',
-        'config/\*',
-        'database/\*',
-        'public/\*',
-        'resources/\*',
-        'routes/\*',
-        'storage/\*',
-        'vendor/\*',
-        '.ebextensions/\*',
+        'app/*',
+        'bootstrap/*',
+        'config/*',
+        'database/*',
+        'public/*',
+        'resources/*',
+        'routes/*',
+        'storage/*',
+        'vendor/*',
+        '.ebextensions/*',
         '.env',
         'composer.json',
         'artisan',
     ],
+
 
 ];
