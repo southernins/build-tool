@@ -31,7 +31,7 @@ class NPM {
         // Install Node
         // curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
         // sudo apt-get install -y nodejs
-        $npmProduction = new Process( "npm run production" );
+        $npmProduction = new Process( ['npm', 'run', 'production'] );
         $npmProduction->setTimeout(180);
         $npmProduction->start();
 
@@ -58,7 +58,7 @@ class NPM {
 
         self::linuxSetup();
 
-        $npmDev = new Process( "npm run dev" );
+        $npmDev = new Process( ['npm', 'run', 'dev'] );
         $npmDev->setTimeout(180);
         $npmDev->start();
 
@@ -83,7 +83,7 @@ class NPM {
 
             if( realpath( base_path() . '/node_modules/optipng-bin/vendor' )){
 
-                $linuxSetup = new Process( "node " . base_path() . "/node_modules/optipng-bin/lib/install.js" );
+                $linuxSetup = new Process( ['node',  base_path() . '/node_modules/optipng-bin/lib/install.js'] );
                 $linuxSetup->setTimeout( 180 );
                 $linuxSetup->start();
 

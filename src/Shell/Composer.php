@@ -23,7 +23,7 @@ class Composer {
     static function install(){
 
         // Run composer install to restore Dev Dependencies
-        $composerDev = new Process( 'composer install' );
+        $composerDev = new Process( ['composer', 'install'] );
         $composerDev->setTimeout(180);
         $composerDev->start();
 
@@ -41,7 +41,7 @@ class Composer {
     static function installNoDev(){
 
         // Run composer install --no-dev to prevent Dev Deps from pushing t production
-        $composer_prod = new Process( 'composer install --no-dev --optimize-autoloader --no-interaction' );
+        $composer_prod = new Process( ['composer', 'install', '--no-dev', '--optimize-autoloader', '--no-interaction'] );
         $composer_prod->setTimeout(180);
         $composer_prod->start();
 

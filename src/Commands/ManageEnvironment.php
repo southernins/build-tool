@@ -82,7 +82,7 @@ trait ManageEnvironment {
             // Copy .ebextensions folder to .ebextensions_previous
             $cpCommand = 'cp -R ' . $ebExtensions . ' ' . $prevExtensions;
 
-            $cpyFiles = new Process( $cpCommand );
+            $cpyFiles = new Process( explode(' ', $cpCommand) );
             $cpyFiles->setTimeout( 0 );
             $cpyFiles->run();
 
@@ -96,7 +96,7 @@ trait ManageEnvironment {
             // Put Override Files into .ebextensions overwriting any existing files.
             $overrideCommand = 'yes | cp -Rf ' . $ebOverrides . '/. ' . $ebExtensions . '/' ;
 
-            $overwriteFiles = new Process( $overrideCommand  );
+            $overwriteFiles = new Process( explode(' ', $overrideCommand) );
             $overwriteFiles->setTimeout( 0 );
             $overwriteFiles->run();
 
@@ -125,7 +125,7 @@ trait ManageEnvironment {
             // Put Override Files into .ebextensions
             $removeConfigCommand = 'rm -rf ' . base_path() . '/.ebextensions' ;
 
-            $removeConfig = new Process( $removeConfigCommand  );
+            $removeConfig = new Process( explode(' ', $removeConfigCommand)  );
             $removeConfig->setTimeout( 0 );
             $removeConfig->run();
 

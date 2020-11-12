@@ -27,7 +27,7 @@ class Git {
         // INSTALL git in Guest OS
         // sudo apt-get install git
         // Get current Git Branch name
-        $gitBranch = new Process( "git rev-parse --abbrev-ref HEAD" );
+        $gitBranch = new Process( ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] );
         $gitBranch->setTimeout(180);
         $gitBranch->run();
 

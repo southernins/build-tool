@@ -102,6 +102,8 @@ class BuildCommand extends Command{
 
         $this->build( $this->environment );
 
+        return 0;
+
     } // END function handle()
 
 
@@ -215,7 +217,7 @@ class BuildCommand extends Command{
         // Command ran manually here, a Zip class will not be found after Composer uninstall.
         $command = 'zip -r -q ' . $build_file . ' ./ ' . $include;
 
-        $createBuild = new Process( $command );
+        $createBuild = new Process( explode(' ', $command ) );
         $createBuild->setTimeout( 0 );
         $createBuild->run();
 
