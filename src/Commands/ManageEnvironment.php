@@ -96,7 +96,8 @@ trait ManageEnvironment {
             // Put Override Files into .ebextensions overwriting any existing files.
             $overrideCommand = 'yes | cp -Rf ' . $ebOverrides . '/. ' . $ebExtensions . '/' ;
 
-            $overwriteFiles = new Process( explode(' ', $overrideCommand) );
+
+            $overwriteFiles = Process::fromShellCommandline( $overrideCommand );
             $overwriteFiles->setTimeout( 0 );
             $overwriteFiles->run();
 
@@ -105,6 +106,7 @@ trait ManageEnvironment {
                 throw new ProcessFailedException( $overwriteFiles );
 
             }
+
 
             echo $overwriteFiles->getOutput();
 
