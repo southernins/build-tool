@@ -296,7 +296,7 @@ class BuildCommand extends Command{
 
         try{
 
-            $confirmed = $this->isNotBranch( 'master' );
+            $confirmed = $this->isBranch( 'master' );
 
         } catch( ProcessFailedException $exception){ // Catches error in underlying Git call
 

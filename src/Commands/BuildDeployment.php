@@ -53,9 +53,9 @@ trait BuildDeployment{
     }
 
 
-    protected function isNotBranch( $branchName ){
+    protected function isBranch( $branchName ){
 
-        return Git::branchName() != $branchName;
+        return Git::branchName() == $branchName;
 
     }
 
