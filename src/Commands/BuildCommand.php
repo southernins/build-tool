@@ -304,7 +304,7 @@ class BuildCommand extends Command{
 
         }
 
-        if( $confirmed === false || $failed === false ){
+        if( $confirmed === false || $failed === true ){
 
             if( $failed === true ){
                 $this->error( "Git command failed while creating production Deployment." );
