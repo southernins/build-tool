@@ -209,7 +209,7 @@ class BuildCommand extends Command{
 
         $include = '';
         if( count( $include_list ) > 0 ){
-            $include = '-i ' . implode( $include_list, ' ' );
+            $include = '-i ' . implode( ' ', $include_list );
         }
 
         $build_file = base_path() . '/../' . $build . '_v-' . $version . '.zip';
