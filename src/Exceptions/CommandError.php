@@ -6,14 +6,10 @@
  * Time: 11:17 AM
  */
 
-namespace SouthernIns\BuildTool\Commands;
+namespace SouthernIns\BuildTool\Exceptions;
 
 
-//use Throwable;
-use Illuminate\Console\Command;
-
-
-class CommandError extends \RuntimeException {
+class CommandException extends \RuntimeException {
 
     public function __construct( BuildCommand $artisanCommand, $message = '' ){
 
