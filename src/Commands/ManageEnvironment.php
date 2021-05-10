@@ -29,12 +29,13 @@ trait ManageEnvironment {
         // rename and copy new env IF file exists.
         if( file_exists( $newEnv )) {
 
-            rename( base_path() . '/.env', base_path() . '/.env.previous' );
+            $this->backupEnvironmentFile();
 
-            // Try and restore .env file if copy fails.
             try{
                 copy( $newEnv, base_path() . "/.env" );
             } catch( \Exception $exception ){
+
+                // restore .env file if copy fails.
                 $this->restoreEnvironmentFile();
                 $this->terminateCommand( $exception->getMessage() );
             }
@@ -46,6 +47,17 @@ trait ManageEnvironment {
         }
 
     } //- END function setEnvironmentFile()
+
+
+    /**
+     * Backup local Environment file before creating deployment pacakge
+     */
+    protected function backupEnvironmentFile(){
+
+        rename( base_path() . '/.env', base_path() . '/.env.previous' );
+
+    } //- END function backupEnvironmentFile()
+
 
     /**
      * Restore Previous Environment file after Deployment Package created
@@ -115,6 +127,7 @@ trait ManageEnvironment {
 
     } //- END function overrideEBConfig
 
+
     /**
      * Restore Previous .ebextensions after Deployment Package Created
      */
@@ -138,7 +151,6 @@ trait ManageEnvironment {
             }
 
             echo $removeConfig->getOutput();
-
 
             rename( base_path() . '/.ebextensions.previous', base_path() . '/.ebextensions' );
 

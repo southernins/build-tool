@@ -307,6 +307,8 @@ class BuildCommand extends Command{
         if( $confirmed === false || $failed === true ){
 
             if( $failed === true ){
+
+                // todo: relocate into catch statement above.
                 $this->error( "Git command failed while creating production Deployment." );
                 $this->error( "Master branch could not be confirmed. Practice Caution!" );
             }else{
