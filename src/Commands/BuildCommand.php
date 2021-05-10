@@ -313,6 +313,8 @@ class BuildCommand extends Command{
                 $this->error( "Creating a Production Deployment from a Branch other than Master" );
             }
 
+            // see the confrimable trait.  i may be able to
+            // https://github.com/laravel/framework/blob/8.x/src/Illuminate/Console/ConfirmableTrait.php
             if( !$this->confirm( "Are you sure this is what you would like to do?" ) ){
                 $this->terminateCommand();
             }
