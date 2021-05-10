@@ -20,8 +20,9 @@ class GitTest extends TestCase
     {
 //        SELF::setBranchMaster();
 
-        $isBranchMaster = Git::branchName() == 'master';
+        $isBranchMaster = Git::branchName() == 'test';
 
+//        dd( $isBranchMaster );
         $this->assertEquals( true , $isBranchMaster  );
     }
 
