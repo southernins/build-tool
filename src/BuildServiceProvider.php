@@ -14,6 +14,8 @@ class BuildServiceProvider extends ServiceProvider {
     public function boot(){
         // Boot runs after ALL providers are registered
 
+        $this->loadTranslationsFrom(__DIR__.'/Lang' , 'build-tool');
+
     } //- END function boot()
 
     public function register(){
