@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
+use Illuminate\Support\Facades\Lang;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -155,8 +156,10 @@ class BuildCommand extends Command{
                 $this->comment( "Running NPM Production Script" );
                 NPM::runProduction();
 
+                // required-dev dependencies removed here classes
                 $this->comment( "Removing Composer Dev Dependencies" );
                 Composer::installNoDev();
+
 
             }else{
 
@@ -166,6 +169,8 @@ class BuildCommand extends Command{
             } // END if production
 
             // Create Build .zip Package
+            // shell class failed here because we uninstall this package in production
+            // creating teh class above and executing the command here could work.77
             $this->createBuildFile( $buildName, $buildVersion, $buildFileList );
 
             // short delay to make sure everything is done.
@@ -337,7 +342,8 @@ class BuildCommand extends Command{
         if( $message != '' ){
             $this->error( $message );
         }
-        $this->error( "Build Process Terminated!" );
+
+        $this->error( Lang::get( 'build-tool::errors.terminated' ) );
         exit();
     }
 
@@ -345,7 +351,8 @@ class BuildCommand extends Command{
     protected function composerCheck(){
 
         if( Composer::checkInstall() === FALSE ){
-            $this->terminateCommand( "vendor Folder not found. Run composer install" );
+            $this->terminateCommand(  Lang::get( 'build-tool::errors.composer_check' ));
+//            $this->terminateCommand( "vendor Folder not found. Run composer install" );
         }
     }
 
@@ -353,7 +360,7 @@ class BuildCommand extends Command{
     protected function npmCheck(){
 
         if( NPM::checkInstall() === FALSE ){
-            $this->terminateCommand( "node_modules Folder not found. Run npm install" );
+            $this->terminateCommand(  Lang::get( 'build-tool::errors.npm_check' ));
         }
 
     }
