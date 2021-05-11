@@ -99,7 +99,7 @@ class BuildCommand extends Command{
      */
     public function handle(){
 
-        $this->info( $this->environment );
+//        $this->info( $this->environment );
 
         $this->build( $this->environment );
 
@@ -129,7 +129,7 @@ class BuildCommand extends Command{
 
         $this->clearCache( $environment );
 
-        $this->info( 'Setting Environment to - ' . $environment );
+        $this->comment( 'Building environment: ' . $environment );
 
         $this->setEnvironmentFile( $environment );
 
@@ -352,7 +352,6 @@ class BuildCommand extends Command{
 
         if( Composer::checkInstall() === FALSE ){
             $this->terminateCommand(  Lang::get( 'build-tool::errors.composer_check' ));
-//            $this->terminateCommand( "vendor Folder not found. Run composer install" );
         }
     }
 
