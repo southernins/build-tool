@@ -7,13 +7,19 @@ use SouthernIns\BuildTool\ShellCommand;
 use Tests\TestCase;
 
 
-class BuildTest extends TestCase
+class BuildNpmCheckTest extends TestCase
 {
 
+    private $randomizedFolder;
 
-    public function test_it_can_create_build_file()
+    public function setUp(): void
     {
+
+        $this->randomizedFolder = uniqid( 'node_modules_' );
+        parent::setUp();
+
     }
+
 
     /**
      * @group testingtest
@@ -38,10 +44,17 @@ class BuildTest extends TestCase
 
             $output = $testProcess->getOutput();
 
-            $this->assertTrue($testProcess->isSuccessful());
+            $this->assertTrue( $testProcess->isSuccessful() );
 
-            $this->assertStringContainsString(Lang::get('build-tool::errors.npm_check'), $output);
-            $this->assertStringContainsString(Lang::get('build-tool::errors.terminated'), $output);
+            $this->assertStringContainsString(
+                Lang::get('build-tool::errors.npm_check'),
+                $output
+            );
+
+            $this->assertStringContainsString(
+                Lang::get('build-tool::errors.terminated'),
+                $output
+            );
 
         } finally {
             $this->restoreNodeModulesAfterTest();
@@ -50,17 +63,15 @@ class BuildTest extends TestCase
     } //- END test_it_checks_npm_install()
 
 
-    public function renameNodeModulesForTest()
-    {
+    public function renameNodeModulesForTest(){
         // rename node_modules
-        rename(base_path() . '/node_modules', base_path() . '/test_node_modules');
+        rename(base_path() . '/node_modules', base_path() . '/' . $this->randomizedFolder );
     }
 
 
-    public function restoreNodeModulesAfterTest()
-    {
+    public function restoreNodeModulesAfterTest(){
         //restore node_modules
-        rename(base_path() . '/test_node_modules', base_path() . '/node_modules');
+        rename(base_path() . '/' . $this->randomizedFolder , base_path() . '/node_modules');
     }
 
 
