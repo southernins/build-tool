@@ -18,26 +18,9 @@ class GitTest extends TestCase
      */
     public function testGitBranch()
     {
-//        SELF::setBranchMaster();
-
-        $isBranchMaster = Git::branchName() == 'test';
-
-//        dd( $isBranchMaster );
-        $this->assertEquals( true , $isBranchMaster  );
-    }
-
-    static function setBranchMaster(){
-
-        $gitBranch = new Process( "git checkout master" );
-        $gitBranch->setTimeout(180);
-        $gitBranch->run();
-
-        if( !$gitBranch->isSuccessful() ){
-            throw new ProcessFailedException( $gitBranch );
-        }
-
-        return $gitBranch->isSuccessful();
-
+        $branch = Git::branchName();
+        $this->assertNotEmpty( $branch );
+        $this->assertIsString( $branch );
     }
 
 
