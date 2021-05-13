@@ -187,7 +187,7 @@ class BuildCommand extends Command{
 
             //            $this->call( "config:clear" );
 
-            $this->info( "Build Completed Successfully" );
+            $this->info( Lang::get( 'build-tool::messages.build-successful') );
 
         }catch( \Exception $exception ){
 
@@ -343,7 +343,7 @@ class BuildCommand extends Command{
             $this->error( $message );
         }
 
-        $this->error( Lang::get( 'build-tool::errors.terminated' ) );
+        $this->error( Lang::get( 'build-tool::messages.terminated' ) );
         exit();
     }
 
@@ -351,7 +351,7 @@ class BuildCommand extends Command{
     protected function composerCheck(){
 
         if( Composer::checkInstall() === FALSE ){
-            $this->terminateCommand(  Lang::get( 'build-tool::errors.composer_check' ));
+            $this->terminateCommand(  Lang::get( 'build-tool::messages.error.composer_check' ));
         }
     }
 
@@ -359,7 +359,7 @@ class BuildCommand extends Command{
     protected function npmCheck(){
 
         if( NPM::checkInstall() === FALSE ){
-            $this->terminateCommand(  Lang::get( 'build-tool::errors.npm_check' ));
+            $this->terminateCommand(  Lang::get( 'build-tool::messages.error.npm_check' ));
         }
 
     }

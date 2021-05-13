@@ -47,12 +47,12 @@ class BuildNpmCheckTest extends TestCase
             $this->assertTrue( $testProcess->isSuccessful() );
 
             $this->assertStringContainsString(
-                Lang::get('build-tool::errors.npm_check'),
+                Lang::get('build-tool::messages.error.npm_check'),
                 $output
             );
 
             $this->assertStringContainsString(
-                Lang::get('build-tool::errors.terminated'),
+                Lang::get('build-tool::messages.terminated'),
                 $output
             );
 
