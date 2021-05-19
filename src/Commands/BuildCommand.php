@@ -6,14 +6,12 @@
 //namespace App\Console\Commands;
 namespace SouthernIns\BuildTool\Commands;
 
-use Carbon\Carbon;
 
 use Illuminate\Console\Command;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\File;
 
 use Illuminate\Support\Facades\Lang;
 use Symfony\Component\Process\Process;
@@ -23,12 +21,8 @@ use SouthernIns\BuildTool\Shell\Composer;
 
 use SouthernIns\BuildTool\Shell\NPM;
 
-
-//use SouthernIns\BuildTool\Shell\Zip;
-//
-//use \Illuminate\Cache\FileStore;
-//
-//use \Illuminate\Filesystem\Filesystem;
+use SouthernIns\BuildTool\Traits\BuildDeployment;
+use SouthernIns\BuildTool\Traits\ManageEnvironment;
 
 
 class BuildCommand extends Command{
@@ -297,7 +291,6 @@ class BuildCommand extends Command{
     protected function confirmMasterBranch(){
 
         $confirmed = false;
-        $failed = false;
 
         try{
 
@@ -305,22 +298,16 @@ class BuildCommand extends Command{
 
         } catch( ProcessFailedException $exception){ // Catches error in underlying Git call
 
-            $failed = true;
+            $this->error( "Git command failed while creating production Deployment." );
+            $this->error( "Master branch could not be confirmed. Practice Caution!" );
 
         }
 
-        if( $confirmed === false || $failed === true ){
+        if( $confirmed === false ){
 
-            if( $failed === true ){
+                $this->error( "Detected a Production Deployment from a Branch other than Master" );
 
-                // todo: relocate into catch statement above.
-                $this->error( "Git command failed while creating production Deployment." );
-                $this->error( "Master branch could not be confirmed. Practice Caution!" );
-            }else{
-                $this->error( "Creating a Production Deployment from a Branch other than Master" );
-            }
-
-            if( !$this->confirm( "Are you sure this is what you would like to do?" ) ){
+            if( !$this->confirm( Lang::get( 'build-tool::messages.confirmation') ) ){
                 $this->terminateCommand();
             }
 
@@ -344,6 +331,7 @@ class BuildCommand extends Command{
         }
 
         $this->error( Lang::get( 'build-tool::messages.terminated' ) );
+
         exit();
     }
 
