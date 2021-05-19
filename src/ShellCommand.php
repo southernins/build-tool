@@ -21,37 +21,53 @@ class ShellCommand
     protected $processObject;
 
 
-    public function  __construct( $command ){
+    public function  __construct( $command, $input = [] ){
 
-        $this->command = $command;
+        $this->commandFactory( $command );
 
-        $call = 'executeCommand' . ucfirst( gettype( $this->command ) );
+        $this->handleCommandInput( $input );
 
-        return $this->$call();
+        $this->runCommand();
+
+        return $this->processObject;
 
 
     }
 
+    protected function commandFactory( $command ){
 
-    protected function executeCommandArray(){
+        $executeFunction = 'executeCommand' . ucfirst( gettype( $command ) );
 
-        $process = new Process( $this->command );
-        $process->setTimeout( 0 );
-        $process->mustRun();
-
-        $this->processObject = $process;
+        $this->$executeFunction( $command );
 
     }
 
 
-    protected function executeCommandString(){
+    protected function executeCommandArray( $command ){
 
-        $process = Process::fromShellCommandline( $this->command );
-        $process->setTimeout( 0 );
-        $process->mustRun();
+        $this->processObject = new Process( $command );
 
-        $this->processObject = $process;
+    }
 
+
+    protected function executeCommandString( $command ){
+
+        $this->processObject = Process::fromShellCommandline( $command );
+
+    }
+
+    protected function handleCommandInput( $inputArray = [] ){
+
+        foreach( $inputArray as $input ){
+
+            $this->processObject->setInput( $input );
+        }
+    }
+
+    protected function runCommand(){
+
+        $this->processObject->setTimeout( 0 );
+        $this->processObject->mustRun();
     }
 
 
