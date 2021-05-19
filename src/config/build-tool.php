@@ -12,6 +12,10 @@ return [
 
     'name' => "",
 
+    'branches' =>[
+        'production' => 'master'
+    ],
+
 
     // Add BuildFile Output Directory as Config item
 
