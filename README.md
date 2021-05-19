@@ -5,7 +5,7 @@ AWS Elastic Beanstalk Hosted Projects
 
 ## Requirements
 
-  - Laravel 5.5+
+  - Laravel 7+
   - Git must be installed ( Addd to Vagrant Bootstrap.sh )  
     `sudo apt-get install git`
   - zip must be installed ( Addd to Vagrant Bootstrap.sh )  
@@ -40,39 +40,28 @@ Then run `composer update` or `composer install` as needed.
 
 
     php artisan list
-should then show the following dcommands
+should then show the following command
     
     build 
-    build:dev
-    build:prod
     
 ## Usage
 
 once installed a use the following based on the required build type.
 
 ### Production 
-
-    php artisan build:prod
-    
-which is a shortcut for
     
     php artisan build --env="production"
     
     
 ### Development/Staging
 
-    php artisan build:dev
-    
-which is a shortcut for
-
     php artisan build --env="dev"
     
     
-additionally you can build to any env file found in /environments 
-folder with the following
+additionally you can build to any env file 
 
     php artisan build --env="file-name"
     
-where `.env.file-name` is found in /environments
+where `.env.file-name` is found in the envrionment file locations
 
 
