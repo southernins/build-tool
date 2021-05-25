@@ -68,7 +68,7 @@ trait BuildDeployment{
     protected function checkConfig(){
 
         if( !Config::has( 'build-tool' ) ){
-            $configArr = include __DIR__ . '/../config/build-tool.php';
+            $configArr = include __DIR__ . '/../../config/build-tool.php';
             Config::set( 'build-tool', $configArr );
         }
 
