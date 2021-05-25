@@ -3,13 +3,11 @@
  *
  */
 
-//namespace App\Console\Commands;
 namespace SouthernIns\BuildTool\Commands;
 
-
+use Exception;
 use Illuminate\Console\Command;
 
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cache;
 
@@ -17,6 +15,7 @@ use Illuminate\Support\Facades\Lang;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
+use SouthernIns\BuildTool\BuildTool;
 use SouthernIns\BuildTool\Shell\Composer;
 
 use SouthernIns\BuildTool\Shell\NPM;
@@ -45,22 +44,25 @@ class BuildCommand extends Command{
     protected $description = 'Create Build File for Deployment Use --env to specify environment for Build package';
 
 
-    /**
-     * Environment to deploy
-     *
-     * @var string
-     */
-    protected $environment = 'local';
+
+    protected $buildTool;
+
+//    /**
+//     * Environment to deploy
+//     *
+//     * @var string
+//     */
+//    protected $environment = 'local';
 
     /**
      *
      * @var string
      */
     protected $projectPath = '';
-
-    protected $projectFolder = '';
-
+    
     protected $restoreComposer = FALSE;
+
+    protected $builder;
 
 
     /**
@@ -68,21 +70,20 @@ class BuildCommand extends Command{
      *
      * @return void
      */
-    public function __construct(){
+    public function __construct( BuildTool $buildTool){
 
         parent::__construct();
 
-        // Set build environment from app envrionment
-        // Set with --env on artisan command
-        $this->environment = App::environment();
+        $this->buildTool = $buildTool;
 
-        // Set folderName and Path for project
-        $this->projectPath = base_path();
 
-        $dirArr = explode( "/", $this->projectPath );
-        $this->projectFolder = end(  $dirArr );
-
-        $this->checkConfig();
+//        // Set folderName and Path for project
+//        $this->projectPath = base_path();
+//
+//        $dirArr = explode( "/", $this->projectPath );
+//        $this->projectFolder = end(  $dirArr );
+//
+//        $this->checkConfig();
 
     } //- END __construct()
 
@@ -93,11 +94,32 @@ class BuildCommand extends Command{
      */
     public function handle(){
 
-//        $this->info( $this->environment );
 
-        $this->build( $this->environment );
+        try {
 
-        return 0;
+            $this->buildTool->setBuildEnvironment( App::environment() );
+
+            $this->buildTool->createBuildPackage();
+
+
+            $this->info( Lang::get( 'build-tool::messages.build-successful') );
+
+            return 0;
+
+        }catch( Exception $e ){
+
+            $this->terminateCommand( $e->getMessage() );
+        }
+
+
+
+////      dump( $this->environment );
+//
+//        throw  new Exception( 'Thrown from Handle' );
+//
+//        $this->build( $this->environment );
+//
+//        return 0;
 
     } // END function handle()
 
