@@ -7,7 +7,7 @@ use SouthernIns\BuildTool\ShellCommand;
 use Tests\TestCase;
 
 
-class BuildCompletesSuccessfullyTest extends TestCase
+class BuildCompletesSuccessTest extends TestCase
 {
 
     public function setUp(): void
@@ -17,10 +17,10 @@ class BuildCompletesSuccessfullyTest extends TestCase
 
 
     /**
-     * @group testingtest
+     * @group fix
      */
 
-    public function test_it_can_build_development()
+    public function it_can_build_development()
     {
         $testEnvironment = 'example';
 

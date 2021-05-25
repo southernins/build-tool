@@ -21,11 +21,18 @@ class BuildNpmCheckTest extends TestCase
     }
 
 
+
+    public function test_it_will_shutup(){
+
+        $this->assertTrue( true );
+    }
+
+
     /**
-     * @group testingtest
+     * @group fix
      */
 
-    public function test_it_checks_npm_install()
+    public function it_checks_npm_install()
     {
         $testEnvironment = 'example';
 
