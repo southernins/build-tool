@@ -36,6 +36,7 @@ return [
         'storage/*',
         'vendor/*',
         '.ebextensions/*',
+        '.platform/*',
         '.env',
         'composer.json',
         'artisan',
