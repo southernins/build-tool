@@ -17,8 +17,6 @@ class CommandException extends \RuntimeException {
             $artisanCommand->error( $message );
         }
 
-//        $artisanCommand->error( "Build Process Terminated!" );
-
         parent::__construct( 'Build command resulted in an error, Process Terminated!' );
 
     }
