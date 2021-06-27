@@ -18,8 +18,8 @@ return [
     'confirmation' => "Continue with deployment?",
 
     'error' => [
-        'npm_check' => 'node_modules Folder not found. Run npm install',
-        'composer_check' => 'vendor Folder not found. Run composer install',
+
+
     ],
 
 
