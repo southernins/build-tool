@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use SouthernIns\BuildTool\Shell\Git;
+use SouthernIns\BuildTool\Helpers\Git;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -24,4 +24,4 @@ class GitTest extends TestCase
     }
 
 
-}
+} //- END class GitTest

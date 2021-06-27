@@ -21,14 +21,13 @@ class BuildConfigTest extends TestCase
 
         $config = Config::get( 'build-tool' );
 
-
         $this->assertArrayHasKey( 'name', $config );
         $this->assertArrayHasKey( 'build-class', $config );
-        $this->assertArrayHasKey( 'branches', $config );
+        $this->assertArrayHasKey( 'protected', $config );
         $this->assertArrayHasKey( 'destination', $config );
         $this->assertArrayHasKey( 'env-path', $config );
         $this->assertArrayHasKey( 'include', $config );
 
     }
 
-}
+} //- END class BuildConfigTest{}
