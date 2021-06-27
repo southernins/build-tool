@@ -12,12 +12,12 @@ namespace SouthernIns\BuildTool\Contracts;
 interface PackageBuilder
 {
 
+    public function buildValidations( $force );
 
     public function beforePackageBuild();
 
     public function packageBuild();
 
     public function afterPackageBuild();
-
 
 }

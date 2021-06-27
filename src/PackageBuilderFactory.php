@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Config;
 class PackageBuilderFactory
 {
 
-
-    static function makeBuilder(){
+    static function makeBuilder( ){
 
         $buildClass = Config::get( 'build-tool.build-class' );
-        return new $buildClass();
-    }
 
+        return new $buildClass();
+
+    }
 
 }

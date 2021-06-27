@@ -53,11 +53,12 @@ trait BuildDeployment{
     }
 
 
-    protected function isBranch( $branchName ){
-
-        return Git::branchName() == $branchName;
-
-    }
+    // Moved Directly into Git class
+//    protected function isBranch( $branchName ){
+//
+//        return Git::branchName() == $branchName;
+//
+//    }
 
 
     /**

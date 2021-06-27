@@ -16,9 +16,9 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 use SouthernIns\BuildTool\BuildTool;
-use SouthernIns\BuildTool\Shell\Composer;
+use SouthernIns\BuildTool\Helpers\Composer;
 
-use SouthernIns\BuildTool\Shell\NPM;
+use SouthernIns\BuildTool\Helpers\NPM;
 
 use SouthernIns\BuildTool\Traits\BuildDeployment;
 use SouthernIns\BuildTool\Traits\ManageEnvironment;
@@ -34,7 +34,7 @@ class BuildCommand extends Command{
      *
      * @var string
      */
-    protected $signature = 'build';
+    protected $signature = 'build {--force} ';
 
     /**
      * The console command description.
@@ -45,21 +45,14 @@ class BuildCommand extends Command{
 
 
 
+    /** @var BuildTool
+     *  BuildTool Class
+     */
     protected $buildTool;
 
-//    /**
-//     * Environment to deploy
-//     *
-//     * @var string
-//     */
-//    protected $environment = 'local';
 
-    /**
-     *
-     * @var string
-     */
     protected $projectPath = '';
-    
+
     protected $restoreComposer = FALSE;
 
     protected $builder;
@@ -81,8 +74,7 @@ class BuildCommand extends Command{
 //        $this->projectPath = base_path();
 //
 //        $dirArr = explode( "/", $this->projectPath );
-//        $this->projectFolder = end(  $dirArr );
-//
+
 //        $this->checkConfig();
 
     } //- END __construct()
@@ -97,43 +89,28 @@ class BuildCommand extends Command{
 
         try {
 
-            $this->buildTool->setBuildEnvironment( App::environment() );
+//            $this->buildTool->setBuildEnvironment( App::environment() );
 
-            $this->buildTool->createBuildPackage();
-
+            $this->buildTool->createBuildPackage( $this->output, $this->option( 'force' ) );
 
             $this->info( Lang::get( 'build-tool::messages.build-successful') );
 
-            return 0;
 
         }catch( Exception $e ){
 
             $this->terminateCommand( $e->getMessage() );
+
         }
 
-
-
-////      dump( $this->environment );
-//
-//        throw  new Exception( 'Thrown from Handle' );
-//
-//        $this->build( $this->environment );
-//
-//        return 0;
+        return 0; // assert 0 with success and error
 
     } // END function handle()
 
 
     /**
-     *
-     *
-     * @param $environment string laravel environment to use
-     *
-     */
-    /**
      * run the entire build process
      *
-     * @param $environment
+     * @param $environment string laravel environment to use
      */
     protected function build( $environment ){
 
@@ -175,7 +152,6 @@ class BuildCommand extends Command{
                 // required-dev dependencies removed here classes
                 $this->comment( "Removing Composer Dev Dependencies" );
                 Composer::installNoDev();
-
 
             }else{
 
@@ -305,39 +281,39 @@ class BuildCommand extends Command{
     } //- END function clearCache()
 
 
-    /**
-     * Check if git branch is "master"
-     * and get confirmation for any other branch.
-     *
-     */
-    protected function confirmMasterBranch(){
-
-        $confirmed = false;
-
-        try{
-
-            $confirmed = $this->isBranch( 'master' );
-
-        } catch( ProcessFailedException $exception){ // Catches error in underlying Git call
-
-            $this->error( "Git command failed while creating production Deployment." );
-            $this->error( "Master branch could not be confirmed. Practice Caution!" );
-
-        }
-
-        if( $confirmed === false ){
-
-                $this->error( "Detected a Production Deployment from a Branch other than Master" );
-
-            if( !$this->confirm( Lang::get( 'build-tool::messages.confirmation') ) ){
-                $this->terminateCommand();
-            }
-
-        } // Error conformation
-
-        return $confirmed;
-
-    } //- END function confirmMasterBranch()
+//    /**
+//     * Check if git branch is "master"
+//     * and get confirmation for any other branch.
+//     *
+//     */
+//    protected function confirmMasterBranch(){
+//
+//        $confirmed = false;
+//
+//        try{
+//
+//            $confirmed = $this->isBranch( 'master' );
+//
+//        } catch( ProcessFailedException $exception){ // Catches error in underlying Git call
+//
+//            $this->error( "Git command failed while creating production Deployment." );
+//            $this->error( "Master branch could not be confirmed. Practice Caution!" );
+//
+//        }
+//
+//        if( $confirmed === false ){
+//
+//                $this->error( "Detected a Production Deployment from a Branch other than Master" );
+//
+//            if( !$this->confirm( Lang::get( 'build-tool::messages.confirmation') ) ){
+//                $this->terminateCommand();
+//            }
+//
+//        } // Error conformation
+//
+//        return $confirmed;
+//
+//    } //- END function confirmMasterBranch()
 
 
     /**
@@ -348,31 +324,32 @@ class BuildCommand extends Command{
      */
     protected function terminateCommand( $message = '' ){
 
+        dump( $message );
         if( $message != '' ){
             $this->error( $message );
         }
 
         $this->error( Lang::get( 'build-tool::messages.terminated' ) );
 
-        exit();
+//        exit(1);
     }
 
 
-    protected function composerCheck(){
-
-        if( Composer::checkInstall() === FALSE ){
-            $this->terminateCommand(  Lang::get( 'build-tool::messages.error.composer_check' ));
-        }
-    }
-
-
-    protected function npmCheck(){
-
-        if( NPM::checkInstall() === FALSE ){
-            $this->terminateCommand(  Lang::get( 'build-tool::messages.error.npm_check' ));
-        }
-
-    }
+//    protected function composerCheck(){
+//
+//        if( Composer::checkInstall() === FALSE ){
+//            $this->terminateCommand(  Lang::get( 'build-tool::messages.error.composer_check' ));
+//        }
+//    }
+//
+//
+//    protected function npmCheck(){
+//
+//        if( NPM::checkInstall() === FALSE ){
+//            $this->terminateCommand(  Lang::get( 'build-tool::messages.error.npm_check' ));
+//        }
+//
+//    }
 
 
 } //- END class BuildCommand{}

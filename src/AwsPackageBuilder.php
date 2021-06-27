@@ -9,44 +9,83 @@
 namespace SouthernIns\BuildTool;
 
 
+use Illuminate\Console\Concerns\InteractsWithIO;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Validator;
+use SouthernIns\BuildTool\BuildRules\ComposerInstalledRule;
+use SouthernIns\BuildTool\BuildRules\NpmInstalledRule;
+use SouthernIns\BuildTool\BuildRules\ProtectedEnvironmentRule;
+use SouthernIns\BuildTool\BuildRules\EnvFileExistsRule;
 use SouthernIns\BuildTool\Contracts\PackageBuilder;
+use SouthernIns\BuildTool\Exceptions\BuildValidationException;
+use SouthernIns\BuildTool\Helpers\CacheManager;
+use SouthernIns\BuildTool\Helpers\StorageManager;
 
 
 class AwsPackageBuilder implements PackageBuilder
 {
 
+    // TODO: This class now needs this trait.... AND the interface above.... pull to abstract class?????
+    // does it? does it need this????  $could use an $output Object to render output to console.
+//    use InteractsWithIO;
+
+
+    protected $output;
+
 
     public function __construct()
     {
+    } //- END function __construct(
 
-    }
+    public function buildValidations( $force )
+    {
 
-    public function buildValidations(){
+        // Add ENV::CHeck ??
 
-        // confirm .env.xxxx exists
+        // Add validations to run
+        $validations = [
+            new EnvFileExistsRule,
+            new ComposerInstalledRule,
+            new NpmInstalledRule
+        ];
 
-        // confirm composer installed
+        // skipped if build runs  with --force flag
+        if( $force === false ){
+            $validations[] = new ProtectedEnvironmentRule;
+        }
 
-        // confirm npm installed
+        $validator = Validator::make(
+            [ 'build' => App::environment() ],
+            [ 'build' => $validations ]
+        );
 
-        // ENV::CHeck
+        if( $validator->fails() ){
+            throw new BuildValidationException( $validator->errors()->first( 'build' ) );
+        }
 
-    }
+    } //- END buildValidations()
 
 
     public function beforePackageBuild()
     {
-        // TODO: Implement beforePackageBuild() method.
-
-
 
 
         // Clear Caches
 
+        $this->output->comment( "Clearing Local Caches" );
+        CacheManager::clearAll();
+
+        // Clear Laravel Logs before production deployment
+
+        if( $this->isProduction() ) {
+            StorageManager::clearLogs();
+        }
+
         // Backup ENV File
 
         // backup Ebextensions
-    }
+
+    } //- END function beforePackageBuild ()
 
 
     public function packageBuild()
@@ -59,18 +98,15 @@ class AwsPackageBuilder implements PackageBuilder
 
         // Set Build Environment File
 
-
         // Set Build EB extension Files
-
-
-        // if production confirm master branch
 
         // Composer Install
 
         // Npm Run
 
         // Create Build Package
-    }
+
+    } //- END function packageBuild ()
 
 
     public function afterPackageBuild()
@@ -85,7 +121,29 @@ class AwsPackageBuilder implements PackageBuilder
         // Restore Ebextension Files
 
 
-    }
-    
+    } //- END function afterPackageBuild()
 
-}
+
+    /**
+     * returns true if current environment is set to "production"
+     *
+     * @param $environment laravel environment to use during build
+     *
+     * @return bool
+     */
+    protected function isProduction( $environment )
+    {
+
+        return ( $environment == Confgi::get( 'build-tool:production-env' ));
+
+    } //- END isProduction()
+
+
+    public function setOutput( $output ){
+
+        $this->output = $output;
+
+    } //- END function setOutput ()
+
+
+} //- END class AWSPackageBuilder {}

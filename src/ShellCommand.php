@@ -14,26 +14,38 @@ use Symfony\Component\Process\Process;
 class ShellCommand
 {
 
-
     protected $command;
 
 
     protected $processObject;
 
 
-    public function  __construct( $command, $input = [] ){
+    public function  __construct( $command = null, $input = [], $deferred = false ){
 
         $this->commandFactory( $command );
 
         $this->handleCommandInput( $input );
 
-        $this->runCommand();
+        if( $deferred === false ){
+
+            $this->runCommand( );
+
+        }
 
         return $this->processObject;
 
-
     }
 
+    public function runCommand(){
+
+        $this->processObject->setTimeout( 0 );
+        $this->processObject->mustRun();
+    }
+
+
+    /**
+     * create Process Object based on $command argument type
+     */
     protected function commandFactory( $command ){
 
         $executeFunction = 'executeCommand' . ucfirst( gettype( $command ) );
@@ -64,11 +76,6 @@ class ShellCommand
         }
     }
 
-    protected function runCommand(){
-
-        $this->processObject->setTimeout( 0 );
-        $this->processObject->mustRun();
-    }
 
 
     public function __call( $name, $arguments ){

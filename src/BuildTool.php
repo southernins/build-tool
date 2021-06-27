@@ -12,13 +12,16 @@ namespace SouthernIns\BuildTool;
 class BuildTool
 {
 
-
     /**
      * Environment to deploy
      *
      * @var string
      */
     protected $environment;
+
+    protected $builder;
+
+    protected $output;
 
 
     /**
@@ -28,26 +31,24 @@ class BuildTool
      */
     public function __construct( PackageBuilderFactory $builder ){
 
+        $this->builder =  $builder::makeBuilder();
 
-        $this->builder = $builder::makeBuilder();
-
-
-    } //- END __construct()
+    } //- END function __construct()
 
 
+    public function createBuildPackage( $output, $force = false ){
 
-    public function createBuildPackage(){
+        $this->builder->setOutput( $output );
 
+        $this->builder->buildValidations( $force );
 
         $this->builder->beforePackageBuild();
 
-
         $this->builder->packageBuild();
-
 
         $this->builder->afterPackageBuild();
 
-    }
+    } //- END function createBuildPackage()
 
 
-}
+} //- END class BuildTool{}
