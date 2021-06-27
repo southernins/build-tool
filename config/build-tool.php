@@ -15,6 +15,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Production Environment Name
+    |--------------------------------------------------------------------------
+    |
+    | This value is will control the name of the build fle
+    */
+    'production-env' => 'production',
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Package Builder Class
     |--------------------------------------------------------------------------
     |
@@ -26,13 +36,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Array of Branches
+    | protected build environment
     |--------------------------------------------------------------------------
+    |   These environments have branch expectations for build
+    |   'env_name' => 'branch_name'
     |
-    | version control branch names
+    | a build error will be thrown if building a protected envrionment on any
+    | branch other than what is listed
+    |
     */
 
-    'branches' =>[
+    'protected' =>[
         'production' => 'master'
     ],
 
