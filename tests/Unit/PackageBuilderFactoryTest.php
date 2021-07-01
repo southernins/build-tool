@@ -2,10 +2,8 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Support\Facades\Lang;
 use SouthernIns\BuildTool\Contracts\PackageBuilder;
 use SouthernIns\BuildTool\PackageBuilderFactory;
-use SouthernIns\BuildTool\ShellCommand;
 use Tests\TestCase;
 
 
