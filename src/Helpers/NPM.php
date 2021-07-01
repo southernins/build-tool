@@ -60,11 +60,11 @@ class NPM {
         $npmDev->start();
 
         foreach ($npmDev as $type => $data) {
-            if ($npmDev::ERR === $type) {
-                echo "\n=>".$data;
-            } else { // $process::OUT === $type
-                echo "\n".$data;
-            }
+
+            $writeOut = ($npmDev::ERR === $type) ? '\n-->':'\n';
+
+            echo $writeOut . $data;
+
         }
 
     } //- END function runDev()
@@ -85,11 +85,10 @@ class NPM {
                 $linuxSetup->start();
 
                 foreach( $linuxSetup as $type => $data ){
-                    if( $linuxSetup::ERR === $type ){
-                        echo "\n=> " . $data;
-                    }else{ // $process::OUT === $type
-                        echo "\n" . $data;
-                    }
+
+                    $writeOut = ($linuxSetup::ERR === $type) ? '\n-->':'\n';
+
+                    echo $writeOut . $data;
                 }
 
             }
