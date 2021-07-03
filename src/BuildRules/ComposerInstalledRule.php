@@ -16,8 +16,6 @@ class ComposerInstalledRule implements Rule
     public function passes( $attribute, $value)
     {
 
-//        return File::exists(  base_path() . "/vendor" );
-
         return Composer::checkInstall();
 
     }
