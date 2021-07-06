@@ -48,5 +48,5 @@ once installed you can build to any env file with the following
     php artisan build --env="file-name"
     
 
-
+** NOTE **   I copy my local env file to .env.local.  Simply to have a version of my local development envrionment I can copy/paste back into .env should something go wrong.
 
