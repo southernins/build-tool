@@ -9,6 +9,7 @@
 namespace SouthernIns\BuildTool;
 
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 
 class PackageBuilderFactory
@@ -18,7 +19,7 @@ class PackageBuilderFactory
 
         $buildClass = Config::get( 'build-tool.build-class' );
 
-        return new $buildClass();
+        return App::make( $buildClass );
 
     }
 

@@ -10,44 +10,44 @@ namespace SouthernIns\BuildTool\Helpers;
 
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 
 class CacheManager
 {
 
 
-    static function clearAll(){
+    public function clearAll(){
 
 
-        // Flush Application Cache for local environment
-        // before creating $environment build
-        //        $this->call( "cache:clear", [
-        //            '--env' => "local"
-        //        ]);
+        $this->clearConfigCache();
+
+        $this->clearFileCache();
+
+        $this->clearViewsCache();
 
 
-        Cache::store( 'file' )->flush();
-
-        // TODO:: Clear All of Storage from local environment before deploying
-
-        // Remove Cached Views
-        Artisan::call( "view:clear" );
-
-        // Remove Config Cache File
-        Artisan::call( "config:clear" );
-
-        // Calling Build with --env="" will overwrite the
-        // cache with the config of the environment being deployed..
-        // CANNOT CACHE Config in local env before deployment
-        //        $this->call( "config:cache" );
-
-//        $this->info( "Route Caching - Disabled" );
         //      // Remove Route Cache file
         // Route Caching fails due to Closures in Routes
-        // PHP Cannot serialize routes with closures.
-        //      $this->call( "route:clear", [
-        //          '--env' => $environment
-        //      ]);
+
 
     }
+
+    protected function clearConfigCache(){
+
+        Artisan::call( "config:clear" );
+    }
+
+    protected function clearFileCache(){
+
+        Cache::store( 'file' )->flush();
+    }
+
+    protected function clearViewsCache(){
+
+        Artisan::call( "view:clear" );
+
+    }
+
+
 
 }

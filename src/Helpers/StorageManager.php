@@ -15,7 +15,7 @@ class StorageManager
 {
 
 
-    static function clearLogs(){
+    public function clearLogs(){
 
         Storage::cleanDirectory( storage_path( 'logs' ) );
 

@@ -14,13 +14,12 @@ use Symfony\Component\Process\Process;
 
 class Composer {
 
-    // TODO:: Confirm composer is installed
 
     /**
      * run composer install
      *
      */
-    static function install(){
+    public function install(){
 
         // Run composer install to restore Dev Dependencies
         $composerDev = new Process( ['composer', 'install'] );
@@ -38,7 +37,7 @@ class Composer {
     /**
      * Run Composer Install --no-dev
      */
-    static function installNoDev(){
+    public function installNoDev(){
 
         // Run composer install --no-dev to prevent Dev Deps from pushing t production
         $composer_prod = new Process( ['composer', 'install', '--no-dev', '--optimize-autoloader', '--no-interaction'] );

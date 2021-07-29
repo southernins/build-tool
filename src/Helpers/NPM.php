@@ -16,14 +16,12 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class NPM {
 
 
-    // TODO:: Confirm Node AND npm are installed
-
     /**
      * Run npm production
      */
-    static function runProduction(){
+    public function runProduction(){
 
-        self::linuxSetup();
+        $this->linuxSetup();
 
         // Install Node
         // curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
@@ -51,7 +49,7 @@ class NPM {
     /**
      * Run npm dev
      */
-    static function runDev(){
+    public function runDev(){
 
         self::linuxSetup();
 
@@ -74,7 +72,7 @@ class NPM {
      * Currently Installs optipng-bin vendor dependencies for Linux
      * Install on Windows only downloads optipng.exe
      */
-    static function linuxSetup(){
+    protected function linuxSetup(){
 
         if( !file_exists( base_path() . '/node_modules/optipng-bin/vendor/optipng' ) ){
 
