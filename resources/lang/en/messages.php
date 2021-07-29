@@ -17,10 +17,8 @@ return [
 
     'confirmation' => "Continue with deployment?",
 
-    'error' => [
+    'cache-clear' => 'Clearing Local Caches'
 
-
-    ],
 
 
 ];
