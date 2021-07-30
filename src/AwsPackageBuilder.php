@@ -115,9 +115,11 @@ class AwsPackageBuilder implements PackageBuilder
 
         // Clear Laravel Logs before production deployment
         if( $this->isProduction() ) {
+            $this->output->info( 'Clearing Logs' );
             $this->storageManager->clearLogs();
         }
 
+        $this->output->info( 'Backing up current environment' );
         // Backup Local Environment
         $this->environmentManager->backupEnvironmentFile();
         $this->ebPlatformManager->backupPlatform();
@@ -128,6 +130,8 @@ class AwsPackageBuilder implements PackageBuilder
 
     public function packageBuild()
     {
+
+        $this->output->info( 'Starting build process.');
         // TODO: Implement packageBuild() method.
 
         // Generate Build Version
@@ -215,7 +219,7 @@ class AwsPackageBuilder implements PackageBuilder
         $version = Carbon::now()->format( 'Y.m.d.Hi' );
 
         // Label non production builds with the current Environment
-        if( !$this->isProducti() ){
+        if( !$this->isProduction() ){
             $version = $version . "_" . $this->environment;
         }
 
