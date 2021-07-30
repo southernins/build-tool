@@ -9,6 +9,8 @@
 namespace SouthernIns\BuildTool;
 
 
+use Illuminate\Support\Facades\Lang;
+
 class BuildTool
 {
 
@@ -38,15 +40,33 @@ class BuildTool
 
     public function createBuildPackage( $output, $force = false ){
 
-        $this->builder->setOutput( $output );
+        try{
 
-        $this->builder->buildValidations( $force );
+            $this->builder->setOutput( $output );
 
-        $this->builder->beforePackageBuild();
+            $this->builder->buildValidations( $force );
 
-        $this->builder->packageBuild();
+            $this->builder->beforePackageBuild();
 
-        $this->builder->afterPackageBuild();
+            $this->builder->packageBuild();
+
+        }catch( \Exception $e ){
+
+            if( $e->getMessage() != '' ){
+                $output->error( $e->getMessage() );
+            }
+
+            $output->error( Lang::get( 'build-tool::messages.terminated' ) );
+
+        }finally{
+
+            $this->builder->afterPackageBuild();
+
+        }
+
+
+
+
 
     } //- END function createBuildPackage()
 

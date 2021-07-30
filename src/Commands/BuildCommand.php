@@ -75,7 +75,7 @@ class BuildCommand extends Command{
 //
 //        $dirArr = explode( "/", $this->projectPath );
 
-//        $this->checkConfig();
+        $this->checkConfig();
 
     } //- END __construct()
 
@@ -87,7 +87,7 @@ class BuildCommand extends Command{
     public function handle(){
 
 
-        try {
+//        try {
 
 //            $this->buildTool->setBuildEnvironment( App::environment() );
 
@@ -96,11 +96,13 @@ class BuildCommand extends Command{
             $this->info( Lang::get( 'build-tool::messages.build-successful') );
 
 
-        }catch( Exception $e ){
-
-            $this->terminateCommand( $e->getMessage() );
-
-        }
+//        }catch( Exception $e ){
+//
+//            $this->buildTool->after
+//
+//            $this->terminateCommand( $e->getMessage() );
+//
+//        }
 
         return 0; // assert 0 with success and error
 
@@ -324,7 +326,7 @@ class BuildCommand extends Command{
      */
     protected function terminateCommand( $message = '' ){
 
-        dump( $message );
+//        dump( $message );
         if( $message != '' ){
             $this->error( $message );
         }
