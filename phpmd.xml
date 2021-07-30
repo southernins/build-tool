@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ruleset name="southern"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0
+                     http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="
+                     http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>
+        Southern Custom PHPMD Rule set
+    </description>
+
+    <!-- Import the entire unused code rule set -->
+    <rule ref="rulesets/unusedcode.xml" >
+        <exclude name="UnusedFormalParameter" />
+    </rule>
+
+    <!-- Import entire naming rule set and exclude rules -->
+    <rule ref="rulesets/naming.xml">
+    </rule>
+
+    <!--<rule ref="rulesets/cleancode.xml">-->
+        <!--<exclude name="StaticAccess" />-->
+    <!--</rule>-->
+
+    <rule ref="rulesets/codesize.xml">
+    </rule>
+
+    <rule ref="rulesets/design.xml">
+    </rule>
+
+    <rule ref="rulesets/controversial.xml">
+        <exclude name="CamelCaseParameterName" />
+        <exclude name="CamelCaseVariableName" />
+        <exclude name="CamelCasePropertyName" />
+    </rule>
+
+
+</ruleset>
