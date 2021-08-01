@@ -34,7 +34,7 @@ class BuildValidationTest extends TestCase
 //
 //        dump( $cmdOutput );
 
-        $testProcess = new ShellCommand(
+        $testProcess = ShellCommand::run(
             [
                 'php',
                 base_path() . '/artisan',
@@ -63,7 +63,7 @@ class BuildValidationTest extends TestCase
 
         $testEnvironment = 'not-found';
 
-        $testProcess = new ShellCommand(
+        $testProcess = ShellCommand::run(
             [
                 'php',
                 base_path() . '/artisan',

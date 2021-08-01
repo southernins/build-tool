@@ -22,7 +22,7 @@ class ShellCommand
 
     public function  __construct( $command = null, $input = [], $deferred = false ){
 
-        $this->commandFactory( $command );
+        $this->processFactory( $command  );
 
         $this->handleCommandInput( $input );
 
@@ -36,6 +36,29 @@ class ShellCommand
 
     }
 
+    public static function run( $command = null, $input = [] ){
+        $process = new static;
+
+        $process->processFactory( $command );
+
+        $process->runCommand();
+
+        $process->handleCommandInput( $input );
+
+        return $process->processObject;
+    }
+
+    public static function deferred( $command = null, $input = [] ){
+
+        $process = new static;
+
+        $process->processFactory( $command );
+
+        $process->handleCommandInput( $input );
+
+        return $process->processObject;
+    }
+
     public function runCommand(){
 
         $this->processObject->setTimeout( 0 );
@@ -46,7 +69,7 @@ class ShellCommand
     /**
      * create Process Object based on $command argument type
      */
-    protected function commandFactory( $command ){
+    protected function processFactory( $command ){
 
         $executeFunction = 'executeCommand' . ucfirst( gettype( $command ) );
 
