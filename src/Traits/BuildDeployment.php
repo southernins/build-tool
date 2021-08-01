@@ -68,6 +68,8 @@ trait BuildDeployment{
      */
     protected function checkConfig(){
 
+
+        // no longer needed config merged via service provider
         if( !Config::has( 'build-tool' ) ){
             $configArr = include __DIR__ . '/../../config/build-tool.php';
             Config::set( 'build-tool', $configArr );
@@ -85,6 +87,7 @@ trait BuildDeployment{
      */
     protected function isProduction( $environment ){
 
+        // Moved to PackageBuilderClass
         return ( $environment == "production" );
 
     } //- END isProduction()
