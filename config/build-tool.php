@@ -59,12 +59,12 @@ return [
     | BuildFile Output Directory
     */
 
-    'destination' => '',
+    'destination' => '../',
 
 
     /*
    |--------------------------------------------------------------------------
-   | Envionrment Source
+   | Environment Source
    |--------------------------------------------------------------------------
    |
    | Environment File Source Directory
