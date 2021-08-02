@@ -40,7 +40,7 @@ class BuildCommand extends Command{
      *
      * @var string
      */
-    protected $signature = 'build';
+    protected $signature = 'build {--path=}';
 
     /**
      * The console command description.
@@ -205,14 +205,18 @@ class BuildCommand extends Command{
 
         $this->comment( "Creating Build File" );
 
-        //        $include_list = Config::get( 'build-tool.include' );
+        $buildPath = $this->option( 'path' ) ?? Config::get( 'build-tool.destination' );
+
+        if( !is_writable( $buildPath )){
+            throw new \Exception( 'Error Writing to build path.  Check path and permissions' );
+        }
 
         $include = '';
         if( count( $include_list ) > 0 ){
             $include = '-i ' . implode( ' ', $include_list );
         }
 
-        $build_file = base_path() . '/../' . $build . '_v-' . $version . '.zip';
+        $build_file = $buildPath . $build . '_v-' . $version . '.zip';
 
         // Command ran manually here, a Zip class will not be found after Composer uninstall.
         $command = 'zip -r -q ' . $build_file . ' ./ ' . $include;

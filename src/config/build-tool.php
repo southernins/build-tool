@@ -13,7 +13,16 @@ return [
     'name' => "",
 
 
-    // Add BuildFile Output Directory as Config item
+    /*
+    |--------------------------------------------------------------------------
+    | Build Destination
+    |--------------------------------------------------------------------------
+    |
+    | BuildFile Output Directory
+    */
+
+    'destination' => base_path() . '/../' ,
+
 
     // Add Environment File Source as Directory
 
