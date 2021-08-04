@@ -171,6 +171,18 @@ class BuildCommand extends Command{
             // short delay to make sure everything is done.
             sleep( 2 );
 
+            //            $this->call( "config:clear" );
+
+            $this->info( "Build Completed Successfully" );
+
+        }catch( \Exception $exception ){
+
+            //            $this->call( "config:clear" );
+//            $this->restoreEnvironmentFile();
+            $this->terminateCommand( $exception->getMessage() );
+
+        }finally{
+
             // restore Dev Dependencies if they were removed
             if( $this->restoreComposer === TRUE ){
                 Composer::install();
@@ -179,18 +191,9 @@ class BuildCommand extends Command{
             // Restore Environment
             $this->restoreEBConfig();
             $this->restoreEnvironmentFile();
-
-            //            $this->call( "config:clear" );
-
-            $this->info( "Build Completed Successfully" );
-
-        }catch( \Exception $exception ){
-
-            //            $this->call( "config:clear" );
-            $this->restoreEnvironmentFile();
-            $this->terminateCommand( $exception->getMessage() );
-
         }
+
+        return 0;
 
     } //- END function build()
 
@@ -323,6 +326,7 @@ class BuildCommand extends Command{
             // https://github.com/laravel/framework/blob/8.x/src/Illuminate/Console/ConfirmableTrait.php
             if( !$this->confirm( "Are you sure this is what you would like to do?" ) ){
                 $this->terminateCommand();
+                exit();
             }
 
         } // Error conformation
@@ -344,7 +348,8 @@ class BuildCommand extends Command{
             $this->error( $message );
         }
         $this->error( "Build Process Terminated!" );
-        exit();
+//        exit();
+//        return 1;
     }
 
 
@@ -352,6 +357,7 @@ class BuildCommand extends Command{
 
         if( Composer::checkInstall() === FALSE ){
             $this->terminateCommand( "vendor Folder not found. Run composer install" );
+            exit();
         }
     }
 
@@ -360,6 +366,7 @@ class BuildCommand extends Command{
 
         if( NPM::checkInstall() === FALSE ){
             $this->terminateCommand( "node_modules Folder not found. Run npm install" );
+            exit();
         }
 
     }

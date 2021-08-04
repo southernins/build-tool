@@ -38,12 +38,14 @@ trait ManageEnvironment {
                 // restore .env file if copy fails.
                 $this->restoreEnvironmentFile();
                 $this->terminateCommand( $exception->getMessage() );
+                exit();
             }
 
         } else {
 
             // if .env.$environment does NOT exist kill command
             $this->terminateCommand( "Environment file for " . $environment . " was not found!" );
+            exit();
         }
 
     } //- END function setEnvironmentFile()
