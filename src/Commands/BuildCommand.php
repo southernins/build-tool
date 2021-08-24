@@ -40,7 +40,7 @@ class BuildCommand extends Command{
      *
      * @var string
      */
-    protected $signature = 'build {--path=}';
+    protected $signature = 'build {--path=} {--ignore-branch}';
 
     /**
      * The console command description.
@@ -300,6 +300,11 @@ class BuildCommand extends Command{
 
         $confirmed = false;
         $failed = false;
+
+
+        if( $this->option( 'ignore-branch' ) == true ){
+            return true;
+        }
 
         try{
 
