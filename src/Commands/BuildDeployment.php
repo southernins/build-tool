@@ -21,9 +21,18 @@ trait BuildDeployment{
      *
      * @return string  version of the current build
      */
-    protected function buildVersion( $environment ){
+    protected function buildVersion( string $environment ): string
+    {
 
-        $version = Carbon::now()->format( 'Y.m.d.Hi' );
+        $buildDate = Carbon::now();
+
+        $timeZone = Config::get( 'build-tool.timezone' ) ?? null;
+
+        if( !is_null( $timeZone )){
+            $buildDate->setTimezone( $timeZone );
+        }
+
+        $version = $buildDate->format( 'Y.m.d.Hi' );
 
         // Label non production builds with the current Environment
         if( !$this->isProduction( $environment ) ){
@@ -61,8 +70,7 @@ trait BuildDeployment{
 
 
     /**
-     * Check for App config values, sets default if not found
-     * If no config file was found use defaults
+     * Check for App config values, sets default from base config file if not found
      *
      */
     protected function checkConfig(){
@@ -78,11 +86,12 @@ trait BuildDeployment{
     /**
      * returns true if current environment is set to "production"
      *
-     * @param $environment laravel environment to use during build
+     * @param string $environment laravel environment to use during build
      *
      * @return bool
      */
-    protected function isProduction( $environment ){
+    protected function isProduction( string $environment ): bool
+    {
 
         return ( $environment == "production" );
 

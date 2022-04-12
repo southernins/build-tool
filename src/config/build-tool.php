@@ -24,6 +24,19 @@ return [
     'destination' => base_path() . '/../' ,
 
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Build Timezone
+    |--------------------------------------------------------------------------
+    |
+    | Sets timezone used when build file version is generated
+    | null | Timezone String ( e.g. 'America/Chicago' )
+    */
+
+    'timezone' => 'America/Chicago',
+
+
     // Add Environment File Source as Directory
 
     /*
