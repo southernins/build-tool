@@ -96,7 +96,8 @@ class BuildCommand extends Command{
      * Execute the console command.
      *
      */
-    public function handle(){
+    public function handle(): int
+    {
 
         $this->info( $this->environment );
 
@@ -118,7 +119,8 @@ class BuildCommand extends Command{
      *
      * @param $environment
      */
-    protected function build( $environment ){
+    protected function build( $environment ): int
+    {
 
         $buildVersion = $this->buildVersion( $environment );
 
