@@ -62,6 +62,7 @@ return [
         '.env',
         'composer.json',
         'artisan',
+        'cron.yaml',
     ],
 
 
