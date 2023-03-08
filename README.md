@@ -5,7 +5,7 @@ AWS Elastic Beanstalk Hosted Projects
 
 ## Requirements
 
-  - Laravel 7+
+  - Laravel 8+
   - Git must be installed ( Add to Vagrant Bootstrap.sh )  
     `sudo apt-get install git`
   - zip must be installed ( Add to Vagrant Bootstrap.sh )  
