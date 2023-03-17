@@ -52,6 +52,7 @@ return [
         'bootstrap/*',
         'config/*',
         'database/*',
+        'lang/*',
         'public/*',
         'resources/*',
         'routes/*',
